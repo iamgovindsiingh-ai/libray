@@ -1,0 +1,1443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NexShelf · Student Portal &amp; AI Reading Hub</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- QR Code Generator CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --secondary: #06b6d4;
+        --accent: #f59e0b;
+        --dark: #0f172a;
+        --surface: #ffffff;
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --font-main: "Plus Jakarta Sans", sans-serif;
+        --font-mono: "Space Grotesk", sans-serif;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        background: var(--bg);
+        color: var(--text-main);
+        font-family: var(--font-main);
+        min-height: 100vh;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 14px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+      }
+      .navbar-brand {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-size: 22px;
+        color: white !important;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-btn {
+        background: rgba(255,255,255,0.12);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .nav-btn:hover { background: white; color: var(--primary); }
+
+      .container { margin-top: 28px; margin-bottom: 60px; }
+
+      /* Stat Cards */
+      .stat-card {
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 22px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+      .stat-icon {
+        width: 48px; height: 48px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px;
+        margin-bottom: 12px;
+      }
+      .stat-val { font-size: 32px; font-weight: 800; font-family: var(--font-mono); }
+      .stat-lbl { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+
+      /* AI Chatbot Floating Trigger & Drawer */
+      .ai-chat-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: linear-gradient(135deg, #4f46e5, #06b6d4);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px 24px;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+        z-index: 1040;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: transform 0.25s, box-shadow 0.25s;
+      }
+      .ai-chat-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 15px 35px rgba(79, 70, 229, 0.5); color: white; }
+
+      .ai-drawer {
+        position: fixed;
+        top: 0; right: -440px;
+        width: 100%; max-width: 420px;
+        height: 100vh;
+        background: var(--surface);
+        box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+        z-index: 1050;
+        transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+      }
+      .ai-drawer.open { right: 0; }
+      .ai-drawer-header {
+        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ai-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; }
+      .ai-msg { padding: 12px 16px; border-radius: 12px; font-size: 13.5px; line-height: 1.5; max-width: 90%; }
+      .ai-msg.bot { background: white; border: 1px solid var(--border); align-self: flex-start; color: var(--text-main); }
+      .ai-msg.user { background: var(--primary); color: white; align-self: flex-end; }
+      .ai-input-box { padding: 16px; border-top: 1px solid var(--border); background: white; }
+
+      /* Voice Mic Pulse Button */
+      .mic-btn {
+        background: #f1f5f9;
+        border: 1px solid var(--border);
+        color: #475569;
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .mic-btn.listening {
+        background: #ef4444;
+        color: white;
+        animation: pulse 1.2s infinite;
+      }
+      @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+        70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      }
+
+      /* Digital Pass Modal Card */
+      .hologram-card {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #0f172a 100%);
+        border-radius: 20px;
+        color: white;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4);
+        border: 1px solid rgba(255,255,255,0.15);
+      }
+      .qr-holder {
+        background: white;
+        padding: 10px;
+        border-radius: 12px;
+        display: inline-block;
+      }
+
+      /* Gamification Hub */
+      .badge-pill {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        transition: 0.2s;
+      }
+      .badge-pill.unlocked {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border-color: #f59e0b;
+      }
+      .badge-icon {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 8px;
+        font-size: 18px;
+        color: #94a3b8;
+      }
+      .badge-pill.unlocked .badge-icon {
+        background: #f59e0b;
+        color: white;
+      }
+
+      /* Book Cards (Grid View) */
+      .book-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: 0.25s;
+        height: 100%;
+      }
+      .book-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+      .shelf-tag {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* 3D Virtual Bookshelf Spine Rack View */
+      .shelf-rack-container {
+        background: #1e293b;
+        border-radius: 16px;
+        padding: 24px 20px 10px;
+        box-shadow: inset 0 10px 30px rgba(0,0,0,0.6);
+        border: 3px solid #0f172a;
+      }
+      .shelf-bay {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        padding: 0 10px 0;
+        overflow-x: auto;
+        min-height: 220px;
+        border-bottom: 14px solid #475569;
+        box-shadow: 0 8px 0 #334155;
+        margin-bottom: 24px;
+      }
+      .book-spine {
+        width: 38px;
+        min-width: 38px;
+        height: 180px;
+        border-radius: 4px 4px 2px 2px;
+        color: white;
+        cursor: pointer;
+        padding: 10px 4px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.4), inset 2px 0 3px rgba(255,255,255,0.25);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
+        position: relative;
+        transform-origin: bottom center;
+      }
+      .book-spine:hover {
+        transform: translateY(-24px) scale(1.08);
+        z-index: 10;
+        box-shadow: 0 16px 30px rgba(0,0,0,0.8);
+      }
+      .spine-title {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: 130px;
+      }
+      .spine-author { font-size: 8px; opacity: 0.8; text-transform: uppercase; }
+
+      /* Filter Toolbar */
+      .filter-toolbar {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      }
+
+      /* Live Occupancy Heatmap Widget */
+      .occupancy-card {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: white;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .occupancy-meter {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.15);
+        overflow: hidden;
+      }
+
+      .section-title {
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-book-sparkles text-warning"></i>NexShelf <span class="badge bg-primary fs-6 px-2 py-1 ms-1">Ultra 200+</span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+          <!-- Notification Bell -->
+          <div class="dropdown">
+            <button class="nav-btn position-relative" id="notifBtn" data-bs-toggle="dropdown">
+              <i class="fas fa-bell"></i>
+              <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end p-3 shadow-lg" style="width: 320px; max-height: 380px; overflow-y: auto;">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="fw-bold mb-0">Notifications</h6>
+                <button class="btn btn-sm text-primary p-0" id="markAllReadBtn" style="font-size: 11px;">Mark read</button>
+              </div>
+              <div id="notifList" class="small text-muted">No new alerts.</div>
+            </div>
+          </div>
+
+          <button class="nav-btn" id="showPassBtn"><i class="fas fa-id-badge text-info"></i>Digital Pass</button>
+          <button class="nav-btn" id="wishlistBtn"><i class="fas fa-heart text-danger"></i>Wishlist</button>
+          <button class="nav-btn" id="notesBtn"><i class="fas fa-pen-to-square"></i>Notes</button>
+          <button class="nav-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Sign Out</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- AI Reading Concierge Floating Trigger -->
+    <button class="ai-chat-btn" id="openAiDrawerBtn">
+      <i class="fas fa-robot"></i>Ask NexLibrarian AI
+    </button>
+
+    <!-- AI Chatbot Drawer with Voice-to-Text -->
+    <div class="ai-drawer" id="aiDrawer">
+      <div class="ai-drawer-header">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-robot text-warning fs-5"></i>
+          <div>
+            <h6 class="mb-0 fw-bold">NexLibrarian Voice AI</h6>
+            <small class="opacity-75" style="font-size: 11px;">Smart Speech &amp; Catalog Advisor</small>
+          </div>
+        </div>
+        <button class="btn-close btn-close-white" id="closeAiDrawerBtn"></button>
+      </div>
+      <div class="ai-messages" id="aiMessages">
+        <div class="ai-msg bot">
+          👋 Hello! I am your AI Librarian. Ask me about any topic, exam subject, or project using text or the microphone button, and I'll find the best books on our shelves!
+        </div>
+      </div>
+      <div class="ai-input-box">
+        <form id="aiChatForm" class="d-flex gap-2">
+          <button type="button" class="mic-btn" id="voiceMicBtn" title="Speak to AI Librarian"><i class="fas fa-microphone"></i></button>
+          <input id="aiInput" class="form-control" placeholder="Ask or speak a topic…" required />
+          <button type="submit" class="btn btn-primary px-3"><i class="fas fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Digital Student Pass Modal -->
+    <div class="modal fade" id="passModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0">
+          <div class="hologram-card" id="digitalPassContent">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <span class="badge bg-primary-subtle text-primary mb-2" style="font-size: 11px;">NEXSHELF UNIVERSITY LIBRARY</span>
+                <h4 class="fw-bold mb-0" id="passStudentName">Student Name</h4>
+                <div class="text-white-50 small" id="passStudentId">STU-0001</div>
+              </div>
+              <i class="fas fa-cube text-warning fs-2"></i>
+            </div>
+            <div class="row align-items-center mb-4">
+              <div class="col-7">
+                <div class="small text-white-50 text-uppercase">DEPARTMENT</div>
+                <div class="fw-bold small mb-2" id="passDept">Computer Science</div>
+                <div class="small text-white-50 text-uppercase">CARD STATUS</div>
+                <div class="badge bg-success" id="passStatus">Active · Good Standing</div>
+              </div>
+              <div class="col-5 text-end">
+                <div class="qr-holder" id="passQrCode"></div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top border-white border-opacity-10 small text-white-50">
+              <span id="passCardNo">LIB-000001</span>
+              <span>Valid thru 2027</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Citation Modal -->
+    <div class="modal fade" id="citationModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold"><i class="fas fa-quote-left me-2 text-warning"></i>Academic Citations</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4" id="citationModalBody">Loading citations…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book Synopsis & Audio Readout Modal -->
+    <div class="modal fade" id="synopsisModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title fw-bold"><i class="fas fa-sparkles me-2 text-warning"></i>Smart Synopsis &amp; Takeaways</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4" id="synopsisModalBody">Loading summary…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal fade" id="wishlistModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title fw-bold"><i class="fas fa-heart me-2 text-danger"></i>Student Book Wishlist Desk</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="row g-4">
+              <div class="col-md-5 border-end">
+                <h6 class="fw-bold mb-3">Request a New Title</h6>
+                <form id="wishlistForm" class="d-grid gap-2">
+                  <input class="form-control" id="reqTitle" placeholder="Book Title" required>
+                  <input class="form-control" id="reqAuthor" placeholder="Author Name" required>
+                  <input class="form-control" id="reqCategory" placeholder="Academic Subject">
+                  <textarea class="form-control" id="reqReason" rows="2" placeholder="Why should the library acquire this?"></textarea>
+                  <button type="submit" class="btn btn-primary fw-bold mt-2">Submit Request</button>
+                </form>
+              </div>
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3">Classmate Requests &amp; Upvotes</h6>
+                <div id="wishlistItems" class="d-grid gap-2" style="max-height: 300px; overflow-y: auto;">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reading Notes Modal -->
+    <div class="modal fade" id="notesModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title fw-bold"><i class="fas fa-pen-nib me-2 text-warning"></i>My Study Notes &amp; Quotes</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="row g-4">
+              <div class="col-md-5 border-end">
+                <h6 class="fw-bold mb-3">Log Reflection / Quote</h6>
+                <form id="noteForm" class="d-grid gap-2">
+                  <select class="form-control" id="noteBookSelect" required><option value="">Select Borrowed Book</option></select>
+                  <input class="form-control" id="noteTitle" placeholder="Note Headline" required>
+                  <textarea class="form-control" id="noteText" rows="3" placeholder="Key concept, summary, or formula…" required></textarea>
+                  <input class="form-control" id="noteQuote" placeholder="Favorite Quote (Optional)">
+                  <button type="submit" class="btn btn-dark fw-bold mt-2">Save Note</button>
+                </form>
+              </div>
+              <div class="col-md-7">
+                <h6 class="fw-bold mb-3">Your Saved Notes</h6>
+                <div id="savedNotesList" class="d-grid gap-2" style="max-height: 320px; overflow-y: auto;">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Book Review Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title fw-bold"><i class="fas fa-star me-2"></i>Rate &amp; Review Book</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4">
+            <h6 id="reviewBookTitle" class="fw-bold mb-3">Book Title</h6>
+            <form id="reviewForm" class="d-grid gap-3">
+              <input type="hidden" id="reviewBookId">
+              <div>
+                <label class="form-label small fw-bold">YOUR RATING</label>
+                <select class="form-control" id="reviewRating">
+                  <option value="5">⭐⭐⭐⭐⭐ (Exceptional)</option>
+                  <option value="4">⭐⭐⭐⭐ (Very Good)</option>
+                  <option value="3">⭐⭐⭐ (Good)</option>
+                  <option value="2">⭐⭐ (Fair)</option>
+                  <option value="1">⭐ (Needs Improvement)</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label small fw-bold">PEER REVIEW / KEY TAKEAWAY</label>
+                <textarea class="form-control" id="reviewText" rows="3" placeholder="Share your experience with this book for fellow students…" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-warning fw-bold">Post Verified Review</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Locate Modal -->
+    <div class="modal fade" id="studentLocateModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+          <div class="modal-header bg-indigo text-white" style="background: var(--primary);">
+            <h5 class="modal-title fw-bold"><i class="fas fa-map-pin me-2 text-warning"></i>Shelf Pinpoint</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4" id="studentLocateModalBody">Locating…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+      <div id="studentMessage" class="alert d-none mb-4" role="alert"></div>
+
+      <!-- Welcome & Score Ribbon -->
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+          <h2 class="fw-bold mb-1">Hello, <span id="welcomeName" class="text-primary">Scholar</span>! 👋</h2>
+          <p class="text-muted mb-0">Explore 200+ academic volumes, voice-activated AI search, and scholar badges.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+          <span class="badge bg-warning text-dark py-2 px-3 fs-6 rounded-pill">
+            🔥 <span id="streakDays">1</span> Day Streak
+          </span>
+          <span class="badge bg-primary text-white py-2 px-3 fs-6 rounded-pill" id="rankBadge">
+            Scholar Apprentice
+          </span>
+        </div>
+      </div>
+
+      <!-- Stats Grid + Live Occupancy Widget -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #e0e7ff; color: #4338ca;"><i class="fas fa-book-bookmark"></i></div>
+            <div class="stat-lbl">Active Borrowed Books</div>
+            <div class="stat-val" id="borrowedBooks">0</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fef3c7; color: #b45309;"><i class="fas fa-clock"></i></div>
+            <div class="stat-lbl">Overdue Titles</div>
+            <div class="stat-val" id="overdueBooks">0</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon" style="background: #fee2e2; color: #b91c1c;"><i class="fas fa-coins"></i></div>
+            <div class="stat-lbl">Outstanding Fine</div>
+            <div class="stat-val" id="fineDue">₹0</div>
+          </div>
+        </div>
+        <!-- Live Library Heatmap & Quiet Zone Radar -->
+        <div class="col-md-3">
+          <div class="occupancy-card h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <small class="text-white-50 text-uppercase fw-bold" style="font-size: 10px;">Library Radar</small>
+                <span class="badge bg-success" style="font-size: 9px;"><i class="fas fa-circle me-1"></i>Open Now</span>
+              </div>
+              <h6 class="fw-bold mb-2">Campus Study Capacity</h6>
+              <div class="d-flex justify-content-between small text-white-50 mb-1">
+                <span>Turing Quiet Wing</span><span>58% Full</span>
+              </div>
+              <div class="occupancy-meter mb-2"><div style="width: 58%; height: 100%; background: #06b6d4;"></div></div>
+              <div class="d-flex justify-content-between small text-white-50 mb-1">
+                <span>Ramanujan Math Hall</span><span>42% Full</span>
+              </div>
+              <div class="occupancy-meter"><div style="width: 42%; height: 100%; background: #10b981;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gamification & Badges Showcase -->
+      <div class="mb-5">
+        <div class="section-title">
+          <span><i class="fas fa-award text-warning me-2"></i>My Scholar Badges &amp; Reading Milestones</span>
+          <span class="small text-muted" id="badgeScoreText">0 Pts Earned</span>
+        </div>
+        <div class="row g-3" id="badgesContainer">Loading badges…</div>
+      </div>
+
+      <!-- Currently Reading Active Loans -->
+      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5">
+        <div class="section-title mb-3">
+          <span><i class="fas fa-book-open-reader text-primary me-2"></i>Currently Reading &amp; Calendar Reminders</span>
+        </div>
+        <div id="myBooks" class="row g-3">Loading your active loans…</div>
+      </div>
+
+      <!-- 200+ Books Catalog with Interactive Filters & View Switcher -->
+      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div class="section-title mb-0">
+            <span><i class="fas fa-books text-success me-2"></i>NexShelf Library Catalog (<span id="catalogCount">205</span> Books)</span>
+          </div>
+          <!-- View Toggle: Grid vs 3D Virtual Bookshelf Spines -->
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-sm btn-primary fw-bold" id="viewGridBtn"><i class="fas fa-grip me-1"></i>Grid View</button>
+            <button type="button" class="btn btn-sm btn-outline-primary fw-bold" id="viewSpineBtn"><i class="fas fa-bars-staggered me-1"></i>3D Spine Rack</button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-4">
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control" id="catalogSearchInput" placeholder="Search by title, author, topic, ISBN…">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="catalogCategorySelect">
+                <option value="">All Academic Categories</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Artificial Intelligence">Artificial Intelligence</option>
+                <option value="Software Engineering">Software Engineering</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+                <option value="Data Science">Data Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="Electronics">Electronics &amp; VLSI</option>
+                <option value="Robotics">Robotics &amp; IoT</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Finance">Economics &amp; Finance</option>
+                <option value="Design">UI/UX &amp; Design</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="catalogDifficultySelect">
+                <option value="">All Difficulty Tiers</option>
+                <option value="Beginner">Beginner Tier</option>
+                <option value="Intermediate">Intermediate Tier</option>
+                <option value="Advanced">Advanced Tier</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <div class="form-check form-switch mt-1">
+                <input class="form-check-input" type="checkbox" id="availableOnlySwitch">
+                <label class="form-check-label small fw-bold" for="availableOnlySwitch">In Stock Only</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid View Container -->
+        <div id="catalogGrid" class="row g-3">Loading catalog…</div>
+
+        <!-- 3D Virtual Spine Rack View Container -->
+        <div id="catalogSpineRack" class="shelf-rack-container d-none">
+          <div class="shelf-bay" id="spineBay"></div>
+          <div class="text-center text-white-50 small mt-2">
+            <i class="fas fa-hand-pointer me-1"></i> Hover over any book spine to inspect · Click to view synopsis, citations, &amp; borrow
+          </div>
+        </div>
+      </div>
+
+      <!-- Department Leaderboard -->
+      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5">
+        <div class="section-title mb-3">
+          <span><i class="fas fa-trophy text-warning me-2"></i>Campus Reading Leaderboard</span>
+        </div>
+        <div class="row g-4" id="leaderboardGrid">Loading leaderboard…</div>
+      </div>
+
+      <!-- Profile Section -->
+      <section id="profileSection">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+          <div class="p-4 bg-primary text-white d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+              <i class="fas fa-user-graduate fs-2"></i>
+              <div>
+                <h4 class="mb-0 fw-bold" id="profileName">My Profile</h4>
+                <span class="opacity-75 small">Library Membership Record</span>
+              </div>
+            </div>
+            <button class="btn btn-light btn-sm fw-bold" id="editProfileBtn"><i class="fas fa-pen me-1"></i>Edit Profile</button>
+          </div>
+          <div class="p-4">
+            <div class="row g-3" id="profileDisplay">
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Student ID</small><span id="profileStudentId" class="fw-bold">—</span></div>
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Email</small><span id="profileEmail" class="fw-bold">—</span></div>
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Department</small><span id="profileDepartment" class="fw-bold">—</span></div>
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Year</small><span id="profileYear" class="fw-bold">—</span></div>
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Phone</small><span id="profilePhone" class="fw-bold">—</span></div>
+              <div class="col-md-4"><small class="text-muted text-uppercase d-block fw-bold" style="font-size: 11px;">Address</small><span id="profileAddress" class="fw-bold">—</span></div>
+            </div>
+
+            <form id="profileForm" class="row g-3 mt-3 d-none">
+              <div class="col-md-6"><label class="form-label small fw-bold">FULL NAME</label><input id="editFullName" class="form-control" required></div>
+              <div class="col-md-6"><label class="form-label small fw-bold">DEPARTMENT</label><input id="editDepartment" class="form-control"></div>
+              <div class="col-md-4"><label class="form-label small fw-bold">YEAR</label><input id="editYear" class="form-control"></div>
+              <div class="col-md-4"><label class="form-label small fw-bold">PHONE</label><input id="editPhone" class="form-control"></div>
+              <div class="col-md-4"><label class="form-label small fw-bold">EMAIL</label><input id="editEmail" class="form-control" disabled></div>
+              <div class="col-12"><label class="form-label small fw-bold">ADDRESS</label><textarea id="editAddress" class="form-control" rows="2"></textarea></div>
+              <div class="col-12 d-flex gap-2">
+                <button class="btn btn-success fw-bold" type="submit"><i class="fas fa-save me-1"></i>Save Profile</button>
+                <button class="btn btn-outline-secondary" type="button" id="cancelEditBtn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/login";
+      }
+
+      const message = document.getElementById("studentMessage");
+      const showMessage = (text, ok = true) => {
+        message.className = `alert alert-${ok ? "success" : "danger"}`;
+        message.textContent = text;
+        message.classList.remove("d-none");
+        setTimeout(() => message.classList.add("d-none"), 5000);
+      };
+
+      async function api(url, method = "GET", body) {
+        const response = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+          body: body ? JSON.stringify(body) : undefined,
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Request failed.");
+        return data;
+      }
+
+      let allCatalogBooks = [];
+      let activeBorrowedBooks = [];
+
+      /* ---------- Voice Recognition for AI Librarian ---------- */
+      const voiceMicBtn = document.getElementById("voiceMicBtn");
+      const aiInput = document.getElementById("aiInput");
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = "en-US";
+
+        recognition.onstart = () => {
+          voiceMicBtn.classList.add("listening");
+          aiInput.placeholder = "Listening… speak now!";
+        };
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          aiInput.value = transcript;
+          document.getElementById("aiChatForm").dispatchEvent(new Event("submit"));
+        };
+
+        recognition.onerror = () => {
+          voiceMicBtn.classList.remove("listening");
+          aiInput.placeholder = "Ask or speak a topic…";
+        };
+
+        recognition.onend = () => {
+          voiceMicBtn.classList.remove("listening");
+          aiInput.placeholder = "Ask or speak a topic…";
+        };
+
+        voiceMicBtn.addEventListener("click", () => {
+          try {
+            recognition.start();
+          } catch (e) {
+            recognition.stop();
+          }
+        });
+      } else {
+        voiceMicBtn.style.display = "none";
+      }
+
+      /* ---------- Text-to-Speech Audio Readout ---------- */
+      function speakText(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      /* ---------- View Switching: Grid vs 3D Spine Rack ---------- */
+      const viewGridBtn = document.getElementById("viewGridBtn");
+      const viewSpineBtn = document.getElementById("viewSpineBtn");
+      const catalogGrid = document.getElementById("catalogGrid");
+      const catalogSpineRack = document.getElementById("catalogSpineRack");
+
+      viewGridBtn.onclick = () => {
+        viewGridBtn.className = "btn btn-sm btn-primary fw-bold";
+        viewSpineBtn.className = "btn btn-sm btn-outline-primary fw-bold";
+        catalogGrid.classList.remove("d-none");
+        catalogSpineRack.classList.add("d-none");
+      };
+
+      viewSpineBtn.onclick = () => {
+        viewSpineBtn.className = "btn btn-sm btn-primary fw-bold";
+        viewGridBtn.className = "btn btn-sm btn-outline-primary fw-bold";
+        catalogGrid.classList.add("d-none");
+        catalogSpineRack.classList.remove("d-none");
+      };
+
+      /* ---------- Main Load Dashboard ---------- */
+      async function loadDashboard() {
+        try {
+          const [stats, booksData, issues, profile, gamification, notifs] = await Promise.all([
+            api("/api/student/stats"),
+            api("/api/books"),
+            api("/api/student/issues"),
+            api("/api/student/profile"),
+            api("/api/student/gamification"),
+            api("/api/student/notifications"),
+          ]);
+
+          allCatalogBooks = booksData.books || [];
+          document.getElementById("catalogCount").textContent = allCatalogBooks.length;
+
+          document.getElementById("borrowedBooks").textContent = stats.borrowed_books;
+          document.getElementById("overdueBooks").textContent = stats.overdue_books;
+          document.getElementById("fineDue").textContent = "₹" + stats.fine_due;
+
+          // Welcome & Profile
+          const fullName = profile.full_name || "Scholar";
+          document.getElementById("welcomeName").textContent = fullName;
+          document.getElementById("profileName").textContent = fullName;
+          document.getElementById("profileStudentId").textContent = profile.student_id || "—";
+          document.getElementById("profileEmail").textContent = profile.email || "—";
+          document.getElementById("profileDepartment").textContent = profile.department || "Not added";
+          document.getElementById("profileYear").textContent = profile.year || "Not added";
+          document.getElementById("profilePhone").textContent = profile.phone || "Not added";
+          document.getElementById("profileAddress").textContent = profile.address || "Not added";
+          document.getElementById("editFullName").value = fullName;
+          document.getElementById("editDepartment").value = profile.department || "";
+          document.getElementById("editYear").value = profile.year || "";
+          document.getElementById("editPhone").value = profile.phone || "";
+          document.getElementById("editEmail").value = profile.email || "";
+          document.getElementById("editAddress").value = profile.address || "";
+
+          // Gamification
+          document.getElementById("streakDays").textContent = gamification.streak_days || 1;
+          document.getElementById("rankBadge").textContent = gamification.rank_title || "Scholar Apprentice";
+          document.getElementById("badgeScoreText").textContent = `${gamification.reading_score || 0} Scholar Pts`;
+
+          // Badges Render
+          const badgesEl = document.getElementById("badgesContainer");
+          badgesEl.innerHTML = (gamification.all_available_badges || []).map((b) => `
+            <div class="col-6 col-md-4 col-lg-2">
+              <div class="badge-pill ${b.unlocked ? 'unlocked' : ''}">
+                <div class="badge-icon"><i class="fas ${b.icon}"></i></div>
+                <h6 class="fw-bold mb-1" style="font-size: 12px;">${b.title}</h6>
+                <small class="text-muted d-block" style="font-size: 10px;">${b.description}</small>
+                ${b.unlocked ? '<span class="badge bg-warning text-dark mt-2" style="font-size: 9px;">Unlocked ✓</span>' : '<span class="badge bg-secondary mt-2" style="font-size: 9px;">Locked</span>'}
+              </div>
+            </div>
+          `).join("");
+
+          // Leaderboard Render
+          const lbGrid = document.getElementById("leaderboardGrid");
+          lbGrid.innerHTML = `
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-2 small text-uppercase text-muted">Top Reading Departments</h6>
+              <ul class="list-group list-group-flush">
+                ${(gamification.department_leaderboard || []).map((d, i) => `
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span><strong>#${i+1}</strong> ${d.department}</span>
+                    <span class="badge bg-primary rounded-pill">${d.total_loans} books</span>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-2 small text-uppercase text-muted">Top Student Scholars</h6>
+              <ul class="list-group list-group-flush">
+                ${(gamification.top_students || []).map((s, i) => `
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <span><strong>#${i+1}</strong> ${s.name} (${s.department})</span>
+                    <span class="badge bg-warning text-dark rounded-pill">${s.score} pts</span>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+          `;
+
+          // Notifications Render
+          if (notifs.unread_count > 0) {
+            document.getElementById("notifBadge").textContent = notifs.unread_count;
+            document.getElementById("notifBadge").classList.remove("d-none");
+          } else {
+            document.getElementById("notifBadge").classList.add("d-none");
+          }
+          const notifList = document.getElementById("notifList");
+          if (notifs.notifications && notifs.notifications.length) {
+            notifList.innerHTML = notifs.notifications.map((n) => `
+              <div class="p-2 border-bottom ${n.is_read ? 'opacity-75' : 'bg-light rounded'}">
+                <div class="fw-bold">${n.title}</div>
+                <div>${n.message}</div>
+                <small class="text-muted">${n.created_at}</small>
+              </div>
+            `).join("");
+          } else {
+            notifList.innerHTML = `<div class="p-2 text-center">No alerts.</div>`;
+          }
+
+          // Active Issues Render (with Calendar & Extend buttons)
+          const activeIssues = issues.issues.filter((i) => i.status === "issued");
+          activeBorrowedBooks = activeIssues;
+          const myBooksEl = document.getElementById("myBooks");
+          myBooksEl.innerHTML = activeIssues.length
+            ? activeIssues.map((i) => `
+              <div class="col-md-6">
+                <div class="book-card">
+                  <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <span class="shelf-tag"><i class="fas fa-location-dot"></i>${i.shelf_location}</span>
+                      ${i.is_overdue ? '<span class="badge bg-danger">Overdue</span>' : '<span class="badge bg-success-subtle text-success">Active Loan</span>'}
+                    </div>
+                    <h6 class="fw-bold mb-1">${i.book_title}</h6>
+                    <p class="text-muted small mb-1">Due Date: <strong>${new Date(i.due_date).toLocaleDateString()}</strong></p>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2 mt-3 pt-2 border-top">
+                    ${i.can_renew ? `<button class="btn btn-sm btn-warning renew-btn flex-fill" data-id="${i.id}"><i class="fas fa-bolt me-1"></i>Extend +3d</button>` : ''}
+                    <a href="/api/issues/${i.id}/calendar.ics" class="btn btn-sm btn-outline-info" title="Add Return Reminder to Apple/Google Calendar"><i class="fas fa-calendar-plus me-1"></i>Cal .ics</a>
+                    <button class="btn btn-sm btn-outline-warning review-btn" data-id="${i.book_id}" data-title="${i.book_title}" title="Write Review"><i class="fas fa-star"></i></button>
+                    <button class="btn btn-sm btn-success return-btn flex-fill" data-id="${i.id}"><i class="fas fa-check me-1"></i>Return</button>
+                  </div>
+                </div>
+              </div>
+            `).join("")
+            : `<div class="col-12 text-muted">You have no active borrowed books. Choose a title below to begin reading!</div>`;
+
+          // Populate Notes Book Select
+          const noteBookSelect = document.getElementById("noteBookSelect");
+          noteBookSelect.innerHTML = `<option value="">Select Borrowed Book</option>` + activeIssues.map((i) => `<option value="${i.book_id}">${i.book_title}</option>`).join("");
+
+          // Render Catalog Cards and 3D Spines
+          filterAndRenderCatalog();
+
+          // Event bindings
+          document.querySelectorAll(".return-btn").forEach((btn) => btn.onclick = () => returnBook(btn.dataset.id));
+          document.querySelectorAll(".renew-btn").forEach((btn) => btn.onclick = () => renewBook(btn.dataset.id));
+          document.querySelectorAll(".review-btn").forEach((btn) => btn.onclick = () => openReviewModal(btn.dataset.id, btn.dataset.title));
+        } catch (err) {
+          showMessage(err.message, false);
+        }
+      }
+
+      /* ---------- Filter & Render Catalog Function ---------- */
+      function filterAndRenderCatalog() {
+        const searchVal = document.getElementById("catalogSearchInput").value.trim().toLowerCase();
+        const catVal = document.getElementById("catalogCategorySelect").value.trim().toLowerCase();
+        const diffVal = document.getElementById("catalogDifficultySelect").value.trim().toLowerCase();
+        const availableOnly = document.getElementById("availableOnlySwitch").checked;
+
+        const filtered = allCatalogBooks.filter((b) => {
+          const matchSearch = !searchVal || (
+            b.title.toLowerCase().includes(searchVal) ||
+            (b.author && b.author.toLowerCase().includes(searchVal)) ||
+            (b.category && b.category.toLowerCase().includes(searchVal)) ||
+            (b.tags && b.tags.toLowerCase().includes(searchVal)) ||
+            (b.isbn && b.isbn.toLowerCase().includes(searchVal)) ||
+            (b.shelf_location && b.shelf_location.toLowerCase().includes(searchVal))
+          );
+          const matchCat = !catVal || (b.category && b.category.toLowerCase().includes(catVal));
+          const matchDiff = !diffVal || (b.difficulty_level && b.difficulty_level.toLowerCase().includes(diffVal));
+          const matchAvail = !availableOnly || b.available_quantity > 0;
+          return matchSearch && matchCat && matchDiff && matchAvail;
+        });
+
+        document.getElementById("catalogCount").textContent = filtered.length;
+
+        // Render Grid View
+        const gridEl = document.getElementById("catalogGrid");
+        gridEl.innerHTML = filtered.length
+          ? filtered.map((b) => `
+            <div class="col-md-6 col-lg-4">
+              <div class="book-card">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="shelf-tag"><i class="fas fa-location-dot"></i>${b.shelf_location}</span>
+                    <span class="badge" style="background: ${b.accent_color || '#3b82f6'}; font-size: 10px;">${b.difficulty_level || 'Intermediate'}</span>
+                  </div>
+                  <h6 class="fw-bold mb-1">${b.title}</h6>
+                  <p class="text-muted small mb-2">${b.author} · ${b.category}</p>
+                </div>
+                <div>
+                  <div class="d-flex justify-content-between align-items-center text-muted small mb-2">
+                    <span>${b.available_quantity} available</span>
+                    <button class="btn btn-sm btn-link text-decoration-none p-0 citation-btn" data-id="${b.id}"><i class="fas fa-quote-right me-1"></i>Cite</button>
+                  </div>
+                  <div class="d-flex gap-2 pt-2 border-top">
+                    <button class="btn btn-sm btn-outline-info synopsis-btn" data-id="${b.id}"><i class="fas fa-sparkles"></i></button>
+                    <button class="btn btn-sm btn-outline-primary locate-btn flex-fill" data-id="${b.id}"><i class="fas fa-map-pin me-1"></i>Locate</button>
+                    <button class="btn btn-sm btn-primary borrow-btn flex-fill" data-id="${b.id}" ${b.available_quantity <= 0 ? 'disabled' : ''}><i class="fas fa-plus me-1"></i>Borrow</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join("")
+          : "<div class='col-12 text-muted py-4 text-center'>No books found matching your filter criteria.</div>";
+
+        // Render 3D Virtual Spine Rack View
+        const spineBay = document.getElementById("spineBay");
+        spineBay.innerHTML = filtered.map((b) => `
+          <div class="book-spine synopsis-btn" data-id="${b.id}" style="background: linear-gradient(180deg, ${b.accent_color || '#3b82f6'}, #0f172a);" title="${b.title} by ${b.author}">
+            <div class="spine-author">${b.difficulty_level ? b.difficulty_level[0] : 'I'}</div>
+            <div class="spine-title">${b.title}</div>
+            <div style="font-size: 8px;"><i class="fas fa-bookmark opacity-50"></i></div>
+          </div>
+        `).join("");
+
+        // Attach event listeners
+        document.querySelectorAll(".borrow-btn").forEach((btn) => btn.onclick = () => borrowBook(btn.dataset.id));
+        document.querySelectorAll(".locate-btn").forEach((btn) => btn.onclick = () => locateBook(btn.dataset.id));
+        document.querySelectorAll(".citation-btn").forEach((btn) => btn.onclick = () => showCitations(btn.dataset.id));
+        document.querySelectorAll(".synopsis-btn").forEach((btn) => btn.onclick = () => showSynopsis(btn.dataset.id));
+      }
+
+      // Filter input change events
+      document.getElementById("catalogSearchInput").addEventListener("input", filterAndRenderCatalog);
+      document.getElementById("catalogCategorySelect").addEventListener("change", filterAndRenderCatalog);
+      document.getElementById("catalogDifficultySelect").addEventListener("change", filterAndRenderCatalog);
+      document.getElementById("availableOnlySwitch").addEventListener("change", filterAndRenderCatalog);
+
+      /* ---------- Academic Citations Generator ---------- */
+      async function showCitations(bookId) {
+        try {
+          const c = await api(`/api/books/${bookId}/citations`);
+          const modalBody = document.getElementById("citationModalBody");
+          modalBody.innerHTML = `
+            <h6 class="fw-bold mb-3">${c.title} <span class="text-muted small">(${c.year})</span></h6>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-uppercase text-muted">IEEE Format</label>
+              <div class="p-2 bg-light rounded small font-monospace d-flex justify-content-between align-items-center">
+                <span>${c.ieee}</span>
+                <button class="btn btn-sm btn-outline-secondary copy-cite-btn" data-text="${encodeURIComponent(c.ieee)}"><i class="fas fa-copy"></i></button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-uppercase text-muted">APA 7th Format</label>
+              <div class="p-2 bg-light rounded small font-monospace d-flex justify-content-between align-items-center">
+                <span>${c.apa}</span>
+                <button class="btn btn-sm btn-outline-secondary copy-cite-btn" data-text="${encodeURIComponent(c.apa)}"><i class="fas fa-copy"></i></button>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-uppercase text-muted">MLA 9th Format</label>
+              <div class="p-2 bg-light rounded small font-monospace d-flex justify-content-between align-items-center">
+                <span>${c.mla}</span>
+                <button class="btn btn-sm btn-outline-secondary copy-cite-btn" data-text="${encodeURIComponent(c.mla)}"><i class="fas fa-copy"></i></button>
+              </div>
+            </div>
+            <div>
+              <label class="form-label small fw-bold text-uppercase text-muted">BibTeX Format</label>
+              <pre class="p-2 bg-light rounded small mb-0 font-monospace" style="font-size: 11px;">${c.bibtex}</pre>
+            </div>
+          `;
+          document.querySelectorAll(".copy-cite-btn").forEach((btn) => {
+            btn.onclick = () => {
+              navigator.clipboard.writeText(decodeURIComponent(btn.dataset.text));
+              btn.innerHTML = `<i class="fas fa-check text-success"></i>`;
+              setTimeout(() => btn.innerHTML = `<i class="fas fa-copy"></i>`, 2000);
+            };
+          });
+          new bootstrap.Modal(document.getElementById("citationModal")).show();
+        } catch (err) { showMessage(err.message, false); }
+      }
+
+      /* ---------- Smart Synopsis & Audio Readout ---------- */
+      async function showSynopsis(bookId) {
+        try {
+          const blurb = await api(`/api/ai/blurb/${bookId}`);
+          const modalBody = document.getElementById("synopsisModalBody");
+          modalBody.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h5 class="fw-bold mb-0">${blurb.title}</h5>
+                <small class="text-muted">${blurb.author} · ${blurb.category}</small>
+              </div>
+              <button class="btn btn-sm btn-outline-primary" id="audioSpeakBtn" title="Listen to AI Summary"><i class="fas fa-volume-high me-1"></i>Read Out</button>
+            </div>
+            <div class="p-3 bg-light rounded mb-3 small">
+              <strong>Overview:</strong> ${blurb.summary}
+            </div>
+            <div class="mb-3">
+              <strong class="small text-uppercase fw-bold text-muted d-block mb-2">Key Academic Takeaways:</strong>
+              <ul class="small ps-3 mb-0">
+                ${blurb.key_takeaways.map((t) => `<li>${t}</li>`).join("")}
+              </ul>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span class="shelf-tag"><i class="fas fa-location-dot"></i>${blurb.shelf_location}</span>
+              <button class="btn btn-sm btn-primary borrow-btn" data-id="${blurb.id}">Borrow Book</button>
+            </div>
+          `;
+          document.getElementById("audioSpeakBtn").onclick = () => {
+            const speechText = `${blurb.title} by ${blurb.author}. Overview: ${blurb.summary}. Key study concepts include: ${blurb.key_takeaways.join(". ")}`;
+            speakText(speechText);
+          };
+          modalBody.querySelector(".borrow-btn").onclick = () => {
+            borrowBook(blurb.id);
+            bootstrap.Modal.getInstance(document.getElementById("synopsisModal")).hide();
+          };
+          new bootstrap.Modal(document.getElementById("synopsisModal")).show();
+        } catch (err) { showMessage(err.message, false); }
+      }
+
+      async function borrowBook(bookId) {
+        try {
+          const res = await api("/api/student/issues", "POST", { book_id: bookId });
+          showMessage(res.message);
+          confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      }
+
+      async function returnBook(issueId) {
+        try {
+          const res = await api(`/api/student/returns/${issueId}`, "POST");
+          showMessage(res.message);
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      }
+
+      async function renewBook(issueId) {
+        try {
+          const res = await api(`/api/student/renew/${issueId}`, "POST");
+          showMessage(res.message);
+          confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      }
+
+      const locateBook = async (bookId) => {
+        try {
+          const data = await api(`/api/shelf/locate/${bookId}`);
+          const modalBody = document.getElementById("studentLocateModalBody");
+          modalBody.innerHTML = `
+            <div class="text-center mb-3">
+              <span class="badge" style="background: ${data.color}; font-size: 13px;">${data.zone}: ${data.zone_name}</span>
+              <h5 class="mt-2 mb-1 fw-bold">${data.title}</h5>
+              <div class="text-muted small">${data.author} · ${data.category}</div>
+            </div>
+            <div class="alert alert-primary py-2 small fw-bold text-center">
+              📍 ${data.shelf_location}
+            </div>
+            <h6 class="fw-bold mt-3 mb-2 small text-uppercase">Walking Navigation Steps:</h6>
+            <ol class="small ps-3 mb-0" style="line-height: 1.6;">
+              ${data.navigation_steps.map((s) => `<li>${s}</li>`).join("")}
+            </ol>
+          `;
+          new bootstrap.Modal(document.getElementById("studentLocateModal")).show();
+        } catch (err) { showMessage(err.message, false); }
+      };
+
+      /* ---------- Digital Pass ---------- */
+      let qrCodeInstance = null;
+      document.getElementById("showPassBtn").addEventListener("click", async () => {
+        try {
+          const pass = await api("/api/student/digital-pass");
+          document.getElementById("passStudentName").textContent = pass.full_name;
+          document.getElementById("passStudentId").textContent = pass.student_id;
+          document.getElementById("passDept").textContent = pass.department;
+          document.getElementById("passCardNo").textContent = pass.library_card_no;
+          document.getElementById("passStatus").textContent = pass.status;
+
+          const qrContainer = document.getElementById("passQrCode");
+          qrContainer.innerHTML = "";
+          qrCodeInstance = new QRCode(qrContainer, {
+            text: pass.qr_payload,
+            width: 100,
+            height: 100,
+            colorDark: "#1e1b4b",
+            colorLight: "#ffffff",
+          });
+          new bootstrap.Modal(document.getElementById("passModal")).show();
+        } catch (err) { showMessage(err.message, false); }
+      });
+
+      /* ---------- AI Librarian Concierge ---------- */
+      const aiDrawer = document.getElementById("aiDrawer");
+      document.getElementById("openAiDrawerBtn").addEventListener("click", () => aiDrawer.classList.add("open"));
+      document.getElementById("closeAiDrawerBtn").addEventListener("click", () => aiDrawer.classList.remove("open"));
+
+      document.getElementById("aiChatForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = document.getElementById("aiInput");
+        const query = input.value.trim();
+        if (!query) return;
+
+        const messages = document.getElementById("aiMessages");
+        messages.innerHTML += `<div class="ai-msg user">${query}</div>`;
+        input.value = "";
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+          const res = await api("/api/ai/ask", "POST", { query });
+          let botHtml = `<div class="ai-msg bot"><div>${res.response}</div>`;
+          if (res.recommendations && res.recommendations.length) {
+            botHtml += `<div class="d-grid gap-2 mt-3">`;
+            res.recommendations.forEach((b) => {
+              botHtml += `
+                <div class="p-2 border rounded bg-light">
+                  <div class="d-flex justify-content-between">
+                    <strong style="font-size: 12px;">${b.title}</strong>
+                    <span class="badge bg-primary" style="font-size: 9px;">${b.difficulty_level}</span>
+                  </div>
+                  <div class="small text-muted" style="font-size: 11px;">📍 ${b.shelf_location}</div>
+                  <button class="btn btn-sm btn-primary w-100 mt-2 py-0 borrow-ai-btn" data-id="${b.id}" style="font-size: 11px;">Borrow Title</button>
+                </div>
+              `;
+            });
+            botHtml += `</div>`;
+          }
+          botHtml += `</div>`;
+          messages.innerHTML += botHtml;
+          messages.scrollTop = messages.scrollHeight;
+
+          // Read response out loud if enabled
+          speakText(res.response);
+
+          document.querySelectorAll(".borrow-ai-btn").forEach((btn) => {
+            btn.onclick = () => {
+              borrowBook(btn.dataset.id);
+              aiDrawer.classList.remove("open");
+            };
+          });
+        } catch (err) {
+          messages.innerHTML += `<div class="ai-msg bot text-danger">Sorry, I encountered an error connecting to the shelf index.</div>`;
+        }
+      });
+
+      /* ---------- Wishlist Desk ---------- */
+      document.getElementById("wishlistBtn").addEventListener("click", async () => {
+        loadWishlist();
+        new bootstrap.Modal(document.getElementById("wishlistModal")).show();
+      });
+
+      async function loadWishlist() {
+        try {
+          const res = await api("/api/requests");
+          const itemsEl = document.getElementById("wishlistItems");
+          itemsEl.innerHTML = res.requests.length
+            ? res.requests.map((r) => `
+              <div class="p-3 border rounded bg-light d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="fw-bold mb-0">${r.title}</h6>
+                  <small class="text-muted">${r.author} · Req by ${r.requester_name}</small>
+                  ${r.status === 'approved' ? '<span class="badge bg-success ms-2">Approved</span>' : ''}
+                </div>
+                <button class="btn btn-sm btn-outline-danger upvote-btn" data-id="${r.id}"><i class="fas fa-heart me-1"></i>${r.votes_count}</button>
+              </div>
+            `).join("")
+            : "<p class='text-muted small'>No requests yet. Be the first to suggest a title!</p>";
+
+          document.querySelectorAll(".upvote-btn").forEach((btn) => {
+            btn.onclick = async () => {
+              try {
+                await api(`/api/requests/${btn.dataset.id}/upvote`, "POST");
+                loadWishlist();
+              } catch (err) { showMessage(err.message, false); }
+            };
+          });
+        } catch (err) { console.error(err); }
+      }
+
+      document.getElementById("wishlistForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/requests", "POST", {
+            title: document.getElementById("reqTitle").value,
+            author: document.getElementById("reqAuthor").value,
+            category: document.getElementById("reqCategory").value,
+            reason: document.getElementById("reqReason").value,
+          });
+          showMessage("Book request added to Wishlist Desk!");
+          document.getElementById("wishlistForm").reset();
+          loadWishlist();
+        } catch (err) { showMessage(err.message, false); }
+      });
+
+      /* ---------- Reading Notes ---------- */
+      document.getElementById("notesBtn").addEventListener("click", () => {
+        loadNotes();
+        new bootstrap.Modal(document.getElementById("notesModal")).show();
+      });
+
+      async function loadNotes() {
+        try {
+          const res = await api("/api/student/notes");
+          const list = document.getElementById("savedNotesList");
+          list.innerHTML = res.notes.length
+            ? res.notes.map((n) => `
+              <div class="p-3 border rounded bg-light">
+                <div class="d-flex justify-content-between">
+                  <strong class="small">${n.title}</strong>
+                  <span class="text-muted" style="font-size: 10px;">${n.created_at}</span>
+                </div>
+                <p class="small mb-1 mt-1">${n.note_text}</p>
+                ${n.quote ? `<blockquote class="blockquote small mb-0 text-muted fst-italic">“${n.quote}”</blockquote>` : ''}
+              </div>
+            `).join("")
+            : "<p class='text-muted small'>No notes recorded yet.</p>";
+        } catch (err) { console.error(err); }
+      }
+
+      document.getElementById("noteForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/student/notes", "POST", {
+            book_id: document.getElementById("noteBookSelect").value,
+            title: document.getElementById("noteTitle").value,
+            note_text: document.getElementById("noteText").value,
+            quote: document.getElementById("noteQuote").value,
+          });
+          showMessage("Note saved to your journal!");
+          document.getElementById("noteForm").reset();
+          loadNotes();
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      });
+
+      /* ---------- Reviews ---------- */
+      function openReviewModal(bookId, title) {
+        document.getElementById("reviewBookId").value = bookId;
+        document.getElementById("reviewBookTitle").textContent = title;
+        new bootstrap.Modal(document.getElementById("reviewModal")).show();
+      }
+
+      document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const bookId = document.getElementById("reviewBookId").value;
+        try {
+          await api(`/api/reviews/${bookId}`, "POST", {
+            rating: document.getElementById("reviewRating").value,
+            review_text: document.getElementById("reviewText").value,
+          });
+          showMessage("Verified review submitted!");
+          bootstrap.Modal.getInstance(document.getElementById("reviewModal")).hide();
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      });
+
+      /* ---------- Profile Edit ---------- */
+      document.getElementById("editProfileBtn").addEventListener("click", () => document.getElementById("profileForm").classList.remove("d-none"));
+      document.getElementById("cancelEditBtn").addEventListener("click", () => document.getElementById("profileForm").classList.add("d-none"));
+
+      document.getElementById("profileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          const res = await api("/api/student/profile", "PUT", {
+            full_name: document.getElementById("editFullName").value,
+            department: document.getElementById("editDepartment").value,
+            year: document.getElementById("editYear").value,
+            phone: document.getElementById("editPhone").value,
+            address: document.getElementById("editAddress").value,
+          });
+          showMessage(res.message);
+          document.getElementById("profileForm").classList.add("d-none");
+          loadDashboard();
+        } catch (err) { showMessage(err.message, false); }
+      });
+
+      document.getElementById("markAllReadBtn").addEventListener("click", async () => {
+        try {
+          await api("/api/student/notifications/read", "POST", { notification_id: "all" });
+          loadDashboard();
+        } catch (err) {}
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userRole");
+        window.location.href = "/login";
+      });
+
+      loadDashboard();
+    </script>
+  </body>
+</html>
