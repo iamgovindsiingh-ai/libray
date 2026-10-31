@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity
 
 from app import db
-from app.models import Member, ReadingNote
+from app.models import Member, ReadingNote, User
 from app.services.gamification_service import GamificationService
 from app.utils.decorators import student_required
 
@@ -12,7 +12,23 @@ gamification_bp = Blueprint("gamification_bp", __name__)
 
 def _get_student_member():
     user_id = int(get_jwt_identity())
-    return Member.query.filter_by(user_id=user_id).first()
+    member = Member.query.filter_by(user_id=user_id).first()
+    if member:
+        return member
+    user = User.query.get(user_id)
+    if not user:
+        return None
+    member = Member(
+        user_id=user.id,
+        student_id=f"STU-{user.id:04d}",
+        email=user.email,
+        department="Computer Science & Engineering" if user.role == "student" else "Library Administration",
+        year="3rd Year" if user.role == "student" else "Faculty/Staff",
+        is_active=True,
+    )
+    db.session.add(member)
+    db.session.commit()
+    return member
 
 
 @gamification_bp.route("/gamification", methods=["GET"])

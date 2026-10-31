@@ -87,7 +87,47 @@ def create_app():
                         conn.commit()
                     except Exception:
                         pass
+
+                # Migration for BookRequest contact fields
+                new_request_cols = [
+                    ("contact_phone", "VARCHAR(30)"),
+                    ("contact_whatsapp", "VARCHAR(30)"),
+                    ("contact_email", "VARCHAR(150)"),
+                    ("urgency", "VARCHAR(20) DEFAULT 'normal'"),
+                    ("admin_notes", "TEXT"),
+                ]
+                for col_name, col_type in new_request_cols:
+                    try:
+                        conn.execute(text(f"ALTER TABLE book_requests ADD COLUMN {col_name} {col_type}"))
+                        conn.commit()
+                    except Exception:
+                        pass
+
+                # Migration for BookOffer price and image_url fields
+                new_offer_cols = [
+                    ("price", "FLOAT DEFAULT 0.0"),
+                    ("image_url", "VARCHAR(350)"),
+                ]
+                for col_name, col_type in new_offer_cols:
+                    try:
+                        conn.execute(text(f"ALTER TABLE book_offers ADD COLUMN {col_name} {col_type}"))
+                        conn.commit()
+                    except Exception:
+                        pass
+
+            import os
+            os.makedirs(os.path.join(app.root_path, "static", "uploads"), exist_ok=True)
             app.logger.info("Database tables created and verified.")
+
+            # Auto-seed initial records on fresh cloud deployments (e.g. Render)
+            try:
+                from app.models import User
+                if User.query.filter_by(email="admin@nexshelf.edu").first() is None:
+                    from seed_demo_data import seed_data
+                    seed_data()
+                    app.logger.info("Initial cloud database seeded successfully.")
+            except Exception as seed_err:
+                app.logger.info(f"Auto-seed check note: {seed_err}")
         except Exception as e:
             app.logger.warning(f"Could not initialize database: {e}")
             app.logger.warning("The app will still run, but API routes requiring database will fail.")

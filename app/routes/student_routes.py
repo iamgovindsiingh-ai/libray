@@ -19,9 +19,9 @@ def _member():
     if member:
         return member
 
-    # Support student accounts that were created before automatic profiles existed.
+    # Support accounts that were created before automatic member profiles existed.
     user = User.query.get(user_id)
-    if not user or user.role != "student":
+    if not user:
         return None
     existing_email_member = Member.query.filter_by(email=user.email).first()
     if existing_email_member:
@@ -32,6 +32,8 @@ def _member():
         user_id=user.id,
         student_id=f"STU-{user.id:04d}",
         email=user.email,
+        department="Computer Science & Engineering" if user.role == "student" else "Library Administration",
+        year="3rd Year" if user.role == "student" else "Faculty/Staff",
         is_active=True,
     )
     db.session.add(member)
@@ -65,6 +67,8 @@ def available_books():
 @student_required()
 def my_issues():
     member = _member()
+    if not member:
+        return jsonify({"issues": []})
     issues = IssueRecord.query.filter_by(member_id=member.id).order_by(IssueRecord.issue_date.desc()).all()
     now = datetime.utcnow()
     return jsonify({

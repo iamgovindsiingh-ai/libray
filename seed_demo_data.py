@@ -1,235 +1,172 @@
 """
 Seed Demo Data for NexShelf Next-Gen
-Creates demo users, categorized books with shelf coordinates, initial wishlist requests, and reviews.
+Creates demo users, categorized books with shelf coordinates, initial wishlist requests, marketplace listings, study notes, and reviews.
 """
 
-from app import create_app, db
-from app.models import Author, Book, Category, Member, User
+from datetime import datetime, timedelta
+from app import db
+from app.models import (
+    Author, Book, Category, Member, User,
+    BookOffer, StudyNote, BookRequest
+)
 from app.services.auth_service import AuthService
 from app.services.review_service import ReviewService
 from app.services.request_service import RequestService
 
 
+def seed_data():
+    print("[*] Seeding NexShelf demo data...")
+
+    # 1. Admin User
+    admin = User.query.filter_by(email="admin@nexshelf.edu").first()
+    if not admin:
+        admin = AuthService.register_user({
+            "email": "admin@nexshelf.edu",
+            "password": "admin123",
+            "full_name": "Chief Librarian Elena Vance",
+            "role": "admin",
+        })
+        print("  [+] Created Admin: admin@nexshelf.edu (pass: admin123)")
+
+    # 2. Student Users
+    students = [
+        ("student@nexshelf.edu", "student123", "Aarav Mehta", "Computer Science", 4),
+        ("rhea.sharma@nexshelf.edu", "student123", "Rhea Sharma", "Mathematics & Computing", 3),
+        ("vikram.patel@nexshelf.edu", "student123", "Vikram Patel", "Artificial Intelligence", 2),
+    ]
+    student_users = []
+    for email, pwd, name, dept, year in students:
+        u = User.query.filter_by(email=email).first()
+        if not u:
+            u = AuthService.register_user({
+                "email": email,
+                "password": pwd,
+                "full_name": name,
+                "role": "student",
+            })
+            print(f"  [+] Created Student: {email} (pass: {pwd})")
+        
+        m = Member.query.filter_by(user_id=u.id).first()
+        if not m:
+            m = Member(
+                user_id=u.id,
+                full_name=name,
+                email=email,
+                department=dept,
+                academic_year=year,
+                max_allowed=5,
+            )
+            db.session.add(m)
+            db.session.commit()
+        student_users.append((u, m))
+
+    # 3. Categories & Authors
+    cat_ai = Category.query.filter_by(name="Artificial Intelligence & ML").first() or Category(name="Artificial Intelligence & ML", description="Deep learning, neural nets, NLP, and agentic workflows.")
+    cat_cs = Category.query.filter_by(name="Systems & Algorithms").first() or Category(name="Systems & Algorithms", description="Operating systems, distributed architectures, algorithms.")
+    cat_math = Category.query.filter_by(name="Mathematics & Cryptography").first() or Category(name="Mathematics & Cryptography", description="Linear algebra, discrete math, and modern cryptographic primitives.")
+    cat_db = Category.query.filter_by(name="Database & Cloud Engineering").first() or Category(name="Database & Cloud Engineering", description="Relational systems, high-throughput cloud storage, and distributed ledgers.")
+    
+    db.session.add_all([cat_ai, cat_cs, cat_math, cat_db])
+    db.session.commit()
+
+    # Books catalog
+    books_data = [
+        ("978-0262033848", "Introduction to Algorithms (4th Edition)", "Thomas H. Cormen", cat_cs.id, 2022, 6, "Zone A · Rack 01 · Shelf 1", "Algorithms", "#4f46e5", "https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=600&q=80"),
+        ("978-0131103627", "The C Programming Language (2nd Edition)", "Brian W. Kernighan", cat_cs.id, 1988, 4, "Zone A · Rack 01 · Shelf 2", "C, Systems", "#06b6d4", "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80"),
+        ("978-0262035613", "Deep Learning", "Ian Goodfellow", cat_ai.id, 2016, 5, "Zone A · Rack 02 · Shelf 1", "Deep Learning", "#10b981", "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80"),
+        ("978-0134685991", "Effective Java (3rd Edition)", "Joshua Bloch", cat_cs.id, 2018, 5, "Zone A · Rack 02 · Shelf 3", "Java, Best Practices", "#f59e0b", "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80"),
+        ("978-1491950357", "Designing Data-Intensive Applications", "Martin Kleppmann", cat_db.id, 2017, 7, "Zone B · Rack 01 · Shelf 1", "Distributed Systems, DB", "#8b5cf6", "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80"),
+        ("978-0132350884", "Clean Code: A Handbook of Agile Craftsmanship", "Robert C. Martin", cat_cs.id, 2008, 6, "Zone B · Rack 01 · Shelf 3", "Software Craft", "#ef4444", "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=600&q=80"),
+        ("978-0134093413", "Operating Systems: Three Easy Pieces", "Remzi H. Arpaci-Dusseau", cat_cs.id, 2018, 5, "Zone B · Rack 02 · Shelf 2", "Operating Systems", "#0284c7", "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80"),
+        ("978-0980232714", "Mathematics for Machine Learning", "Marc Peter Deisenroth", cat_math.id, 2020, 6, "Zone C · Rack 01 · Shelf 1", "Linear Algebra, Calculus", "#14b8a6", "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80"),
+    ]
+
+    for isbn, title, author_name, cat_id, year, qty, shelf, tags, color, cover in books_data:
+        b = Book.query.filter_by(isbn=isbn).first()
+        if not b:
+            auth = Author.query.filter_by(name=author_name).first() or Author(name=author_name)
+            db.session.add(auth)
+            db.session.commit()
+            
+            b = Book(
+                title=title,
+                isbn=isbn,
+                category_id=cat_id,
+                author_id=auth.id,
+                publish_year=year,
+                total_copies=qty,
+                available_copies=qty,
+                shelf_location=shelf,
+                tags=tags,
+                accent_color=color,
+                cover_image_url=cover,
+                summary=f"Standard academic edition of {title}. Comprehensive reference volume.",
+            )
+            db.session.add(b)
+    db.session.commit()
+    print("  [+] Verified curated library volume catalog.")
+
+    # 4. Student Marketplace Listings
+    m_default = student_users[0][1] if student_users else None
+    if m_default and BookOffer.query.count() == 0:
+        offers_data = [
+            ("Introduction to Algorithms (CLRS 3rd Ed)", "Cormen, Leiserson, Rivest", "Computer Science", "Good", "sell", "Aarav Mehta", "+91 98765 43210", "+91 98765 43210", "aarav.mehta@nexshelf.edu", "CS Canteen / Central Library Steps", "Clean edition with no torn pages. All diagrams intact.", 350.0, "https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=600&q=80"),
+            ("Operating System Concepts (10th Ed Dinosaur)", "Silberschatz, Galvin, Gagne", "Computer Science", "Like New", "sell", "Rhea Sharma", "+91 98123 45678", "+91 98123 45678", "rhea.sharma@nexshelf.edu", "Girls Hostel 2 Common Room", "Hardcover, sparingly used for OS course last semester. Mint condition.", 450.0, "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80"),
+            ("Digital Design: With an Introduction to Verilog", "M. Morris Mano, Michael D. Ciletti", "Electronics & CS", "Good", "sell", "Vikram Patel", "+91 97234 56789", "+91 97234 56789", "vikram.patel@nexshelf.edu", "ECE Lab 3 Foyer", "Essential book for 3rd semester logic design. Includes solved state machine examples.", 280.0, "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80"),
+            ("Fundamentals of Software Engineering (5th Edition)", "Rajib Mall", "Software Engineering", "Good", "free_donation", "Shreya Dixit", "+91 98123 45678", "+91 98123 45678", "shreya.dixit@nexshelf.edu", "Girls Hostel 1 Common Room", "Free donation (Semester Endowment) for juniors taking Software Engineering! UML diagrams neatly bookmarked.", 0.0, "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80"),
+            ("Computer Organization and Architecture (11th Ed)", "William Stallings", "Computer Science", "Fair", "lend", "Karan Malhotra", "+91 98345 67890", "+91 98345 67890", "karan.malhotra@nexshelf.edu", "Main Auditorium Steps", "Lending for entire semester! RISC pipeline and cache mapping chapters highlighted.", 0.0, "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80"),
+        ]
+        for t, a, c, cond, o_type, d_name, phone, wa, email, loc, desc, price, img in offers_data:
+            bo = BookOffer(
+                title=t,
+                author=a,
+                category=c,
+                condition=cond,
+                offer_type=o_type,
+                donor_name=d_name,
+                contact_phone=phone,
+                contact_whatsapp=wa,
+                contact_email=email,
+                pickup_location=loc,
+                description=desc,
+                price=price,
+                image_url=img,
+                member_id=m_default.id,
+                status="available",
+            )
+            db.session.add(bo)
+        db.session.commit()
+        print("  [+] Seeded Student Peer Marketplace offers.")
+
+    # 5. Study Notes & Exam Materials
+    if m_default and StudyNote.query.count() == 0:
+        notes_data = [
+            ("Data Structures & Dynamic Programming Formula Sheet", "CS201 · Data Structures", "Trees, Avl Rotations, DP State Equations, and Graph Algorithms (Dijkstra, Bellman-Ford) neatly handwritten with time complexities.", "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80", "Aarav Mehta (Rank 1 CS)", 34),
+            ("Database Management Systems · Complete Normalization Guide", "CS304 · DBMS", "1NF to BCNF step-by-step canonical decomposition examples, relational algebra cheat sheet, and transaction ACID recovery rules.", "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80", "Rhea Sharma (TA DBMS)", 28),
+            ("Theory of Computation · Complete DFA/NFA & Turing Machine Notes", "CS302 · Theory of Computation", "Handcrafted state transition diagrams, Pumping Lemma proofs for regular & CFLs, and reduction techniques for undecidability.", "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80", "Ananya Deshmukh", 19),
+        ]
+        for t, s, d, img, author_lbl, likes in notes_data:
+            sn = StudyNote(
+                title=t,
+                subject=s,
+                description=d,
+                file_url=img,
+                member_id=m_default.id,
+                status="approved",
+                likes_count=likes,
+            )
+            db.session.add(sn)
+        db.session.commit()
+        print("  [+] Seeded Student Study Notes.")
+
+    print("[*] All NexShelf demo data ready.")
+
+
 def seed():
+    from app import create_app
     app = create_app()
     with app.app_context():
-        print("[*] Seeding NexShelf demo data...")
-
-        # 1. Admin User
-        admin = User.query.filter_by(email="admin@nexshelf.edu").first()
-        if not admin:
-            admin = AuthService.register_user({
-                "email": "admin@nexshelf.edu",
-                "password": "admin123",
-                "full_name": "Chief Librarian Elena Vance",
-                "role": "admin",
-            })
-            print("  [+] Created Admin: admin@nexshelf.edu (pass: admin123)")
-
-        # 2. Student Users
-        students = [
-            ("student@nexshelf.edu", "student123", "Alan Turing", "Computer Science & Engineering", "3rd Year"),
-            ("ada@nexshelf.edu", "ada123", "Ada Lovelace", "Information Technology", "2nd Year"),
-            ("ramanujan@nexshelf.edu", "ram123", "Srinivasa Ramanujan", "Mathematics & Computing", "4th Year"),
-        ]
-        created_members = []
-        for email, pwd, name, dept, yr in students:
-            u = User.query.filter_by(email=email).first()
-            if not u:
-                u = AuthService.register_user({
-                    "email": email,
-                    "password": pwd,
-                    "full_name": name,
-                    "role": "student",
-                })
-            m = Member.query.filter_by(user_id=u.id).first()
-            if m:
-                m.department = dept
-                m.year = yr
-                db.session.commit()
-                created_members.append(m)
-        print("  [+] Created Student accounts (e.g. student@nexshelf.edu / student123)")
-
-        # 3. Categories & Authors
-        demo_catalog = [
-            # Zone A: Computing & AI
-            {
-                "isbn": "978-0131103627",
-                "title": "The C Programming Language",
-                "author": "Brian Kernighan & Dennis Ritchie",
-                "category": "Computer Science",
-                "qty": 6,
-                "shelf": "Zone A · Rack 01 · Shelf 1",
-                "difficulty": "Intermediate",
-                "color": "#3b82f6",
-                "tags": "c, programming, system programming, fundamentals",
-                "summary": "The definitive authoritative guide to ANSI C programming written by the designers of the language.",
-                "takeaways": "Pointers and memory structures; Low-level data manipulation; System calls interface; High-speed algorithm design",
-            },
-            {
-                "isbn": "978-0262033848",
-                "title": "Introduction to Algorithms (CLRS)",
-                "author": "Thomas H. Cormen",
-                "category": "Computer Science",
-                "qty": 8,
-                "shelf": "Zone A · Rack 01 · Shelf 2",
-                "difficulty": "Advanced",
-                "color": "#2563eb",
-                "tags": "algorithms, data structures, dynamic programming, graphs, sorting",
-                "summary": "Comprehensive reference textbook covering the entire spectrum of modern algorithms and complexity analysis.",
-                "takeaways": "Asymptotic notation and recurrence analysis; Greedy algorithms and dynamic programming; Graph traversal and network flow; NP-completeness proofs",
-            },
-            {
-                "isbn": "978-0262035613",
-                "title": "Deep Learning",
-                "author": "Ian Goodfellow & Yoshua Bengio",
-                "category": "Artificial Intelligence",
-                "qty": 4,
-                "shelf": "Zone A · Rack 02 · Shelf 1",
-                "difficulty": "Advanced",
-                "color": "#1d4ed8",
-                "tags": "deep learning, ai, neural networks, machine learning, vision",
-                "summary": "The definitive deep learning bible introducing mathematical fundamentals, convolutional nets, and generative models.",
-                "takeaways": "Applied linear algebra and probability for AI; Convolutional & Recurrent neural networks; Optimization algorithms (Adam, RMSProp); Autoencoders and GANs",
-            },
-            {
-                "isbn": "978-1449355739",
-                "title": "Learning Python",
-                "author": "Mark Lutz",
-                "category": "Programming",
-                "qty": 5,
-                "shelf": "Zone A · Rack 03 · Shelf 1",
-                "difficulty": "Beginner",
-                "color": "#60a5fa",
-                "tags": "python, beginner, scripting, oop, basics",
-                "summary": "In-depth, hands-on tutorial for learning Python from scratch to building full applications.",
-                "takeaways": "Python syntax and built-in object types; Object-oriented programming principles; Exception handling and file operations; Standard library modules",
-            },
-            # Zone B: Mathematics & Theory
-            {
-                "isbn": "978-0073383095",
-                "title": "Discrete Mathematics and Its Applications",
-                "author": "Kenneth H. Rosen",
-                "category": "Mathematics",
-                "qty": 5,
-                "shelf": "Zone B · Rack 04 · Shelf 1",
-                "difficulty": "Intermediate",
-                "color": "#10b981",
-                "tags": "discrete math, logic, sets, combinatorics, graph theory",
-                "summary": "A precise and relevant introduction to mathematical concepts essential for computer scientists.",
-                "takeaways": "Propositional logic and predicate calculus; Set theory, relations, and functions; Combinatorics and probability; Graph models and tree traversal",
-            },
-            {
-                "isbn": "978-0980232714",
-                "title": "Linear Algebra Done Right",
-                "author": "Sheldon Axler",
-                "category": "Mathematics",
-                "qty": 4,
-                "shelf": "Zone B · Rack 05 · Shelf 2",
-                "difficulty": "Intermediate",
-                "color": "#059669",
-                "tags": "linear algebra, vectors, matrices, eigenvalues, transformations",
-                "summary": "Clear, modern approach focusing on linear operators and vector spaces without premature determinant clutter.",
-                "takeaways": "Finite-dimensional vector spaces; Linear maps and dual spaces; Eigenvalues, eigenvectors, and invariant subspaces; Inner product spaces and spectral theorem",
-            },
-            # Zone C: Electronics & Robotics
-            {
-                "isbn": "978-0198075721",
-                "title": "Microelectronic Circuits",
-                "author": "Adel S. Sedra & Kenneth C. Smith",
-                "category": "Electronics",
-                "qty": 4,
-                "shelf": "Zone C · Rack 06 · Shelf 1",
-                "difficulty": "Advanced",
-                "color": "#f59e0b",
-                "tags": "electronics, circuits, semiconductors, mosfet, op-amps",
-                "summary": "The gold-standard reference on analog and digital electronic circuit analysis and design.",
-                "takeaways": "Operational amplifier circuits; Diode characteristics and rectifier models; BJT and MOSFET amplifier topologies; Digital CMOS logic design",
-            },
-            {
-                "isbn": "978-0262015356",
-                "title": "Introduction to Autonomous Mobile Robots",
-                "author": "Roland Siegwart",
-                "category": "Robotics",
-                "qty": 3,
-                "shelf": "Zone C · Rack 07 · Shelf 2",
-                "difficulty": "Advanced",
-                "color": "#d97706",
-                "tags": "robotics, autonomous, sensors, slam, navigation",
-                "summary": "Comprehensive introduction to mobile robot locomotion, sensor perception, localization, and motion planning.",
-                "takeaways": "Kinematics and wheel locomotion; Sensor perception (LiDAR, Vision, Sonar); Kalman filtering and SLAM localization; Path planning and obstacle avoidance",
-            },
-            # Zone D: General & Reference
-            {
-                "isbn": "978-0132350884",
-                "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
-                "author": "Robert C. Martin",
-                "category": "Software Engineering",
-                "qty": 6,
-                "shelf": "Zone D · Rack 08 · Shelf 1",
-                "difficulty": "Intermediate",
-                "color": "#8b5cf6",
-                "tags": "clean code, agile, refactoring, best practices, design",
-                "summary": "Revolutionary guide on writing readable, maintainable, and elegant software systems.",
-                "takeaways": "Meaningful naming and small focused functions; Error handling over return codes; Unit testing and Test-Driven Development (TDD); Code refactoring smells and heuristics",
-            },
-        ]
-
-        for item in demo_catalog:
-            existing = Book.query.filter_by(isbn=item["isbn"]).first()
-            if not existing:
-                author = Author.query.filter_by(name=item["author"]).first()
-                if not author:
-                    author = Author(name=item["author"]).save()
-                cat = Category.query.filter_by(name=item["category"]).first()
-                if not cat:
-                    cat = Category(name=item["category"]).save()
-
-                b = Book(
-                    isbn=item["isbn"],
-                    title=item["title"],
-                    author_id=author.id,
-                    category_id=cat.id,
-                    quantity=item["qty"],
-                    available_quantity=item["qty"],
-                    shelf_location=item["shelf"],
-                    difficulty_level=item["difficulty"],
-                    accent_color=item["color"],
-                    tags=item["tags"],
-                    summary=item["summary"],
-                    key_takeaways=item["takeaways"],
-                ).save()
-                print(f"  [+] Shelved: {b.title} ({b.shelf_location})")
-
-        # 4. Seed Wishlist Requests
-        if created_members:
-            m = created_members[0]
-            reqs = [
-                ("Designing Data-Intensive Applications", "Martin Kleppmann", "Distributed Systems", "Essential reading for modern cloud and backend architecture class."),
-                ("Cracking the Coding Interview", "Gayle Laakmann McDowell", "Computer Science", "Need this for final semester campus placement interview preparation."),
-            ]
-            for title, author, cat, reason in reqs:
-                try:
-                    RequestService.create_request(m.id, {
-                        "title": title,
-                        "author": author,
-                        "category": cat,
-                        "reason": reason,
-                    })
-                except Exception:
-                    pass
-            print("  [+] Seeded Wishlist Desk requests.")
-
-            # Seed a sample review
-            b1 = Book.query.filter_by(isbn="978-0131103627").first()
-            if b1:
-                try:
-                    ReviewService.add_review(m.id, b1.id, 5, "An absolute timeless masterpiece. The exercises really sharpen your pointer arithmetic!")
-                    print("  [+] Seeded Verified Reader review.")
-                except Exception:
-                    pass
-
-        print("[*] Seeding complete! NexShelf is loaded and ready.")
+        seed_data()
 
 
 if __name__ == "__main__":

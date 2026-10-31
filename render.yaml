@@ -7,11 +7,9 @@ services:
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
-        value: 3.12.10
+        value: 3.12.7
       - key: ENVIRONMENT
         value: production
-      - key: DATABASE_URL
-        sync: false
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY

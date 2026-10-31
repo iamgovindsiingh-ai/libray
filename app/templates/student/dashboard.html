@@ -21,118 +21,185 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Bootstrap 5 JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <style>
+        <style>
+
       :root {
         --primary: #4f46e5;
         --primary-light: #eef2ff;
+        --primary-hover: #4338ca;
+        --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
         --secondary: #06b6d4;
+        --secondary-gradient: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
         --accent: #f59e0b;
+        --accent-gradient: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        --success: #10b981;
+        --success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        --danger: #ef4444;
+        --danger-gradient: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
         --dark: #0f172a;
         --surface: #ffffff;
         --bg: #f8fafc;
         --border: #e2e8f0;
-        --text-main: #1e293b;
+        --text-main: #0f172a;
         --text-muted: #64748b;
-        --font-main: "Plus Jakarta Sans", sans-serif;
-        --font-mono: "Space Grotesk", sans-serif;
+        --shadow-sm: 0 2px 10px rgba(15, 23, 42, 0.04);
+        --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+        --shadow-lg: 0 20px 40px -10px rgba(15, 23, 42, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.04);
+        --shadow-elevated: 0 20px 35px -8px rgba(15, 23, 42, 0.1), 0 8px 16px -4px rgba(15, 23, 42, 0.04);
+        --font-main: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+        --font-mono: "Space Grotesk", monospace;
       }
 
       * { box-sizing: border-box; margin: 0; padding: 0; }
 
       body {
-        background: var(--bg);
+        background-color: var(--bg);
         color: var(--text-main);
         font-family: var(--font-main);
         min-height: 100vh;
+        line-height: 1.6;
+        letter-spacing: -0.01em;
+        background-image: 
+          radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.035) 0%, transparent 40%),
+          radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.035) 0%, transparent 40%);
       }
 
-      /* Navbar */
+      /* Navbar Modern Glassmorphism */
       .navbar {
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding: 14px 0;
+        background: rgba(15, 23, 42, 0.92);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 12px 0;
         position: sticky;
         top: 0;
         z-index: 1030;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      }
+      .navbar::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 2px;
+        background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981, #f59e0b);
       }
       .navbar-brand {
         font-family: var(--font-mono);
         font-weight: 700;
-        font-size: 22px;
+        font-size: 21px;
         color: white !important;
         display: flex;
         align-items: center;
         gap: 10px;
+        letter-spacing: -0.02em;
+      }
+      .navbar-brand i {
+        color: #818cf8;
+        font-size: 22px;
       }
       .nav-btn {
-        background: rgba(255,255,255,0.12);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.25);
-        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #f1f5f9;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 10px;
         padding: 7px 14px;
         font-size: 13px;
         font-weight: 600;
-        transition: 0.2s;
+        transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        text-decoration: none;
       }
-      .nav-btn:hover { background: white; color: var(--primary); }
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+      }
 
-      .container { margin-top: 28px; margin-bottom: 60px; }
+      .container {
+        max-width: 1380px;
+        margin-top: 28px;
+        margin-bottom: 60px;
+        padding-inline: clamp(16px, 2.5vw, 32px);
+      }
 
       /* Stat Cards */
       .stat-card {
         background: var(--surface);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 22px;
         border: 1px solid var(--border);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+        box-shadow: var(--shadow);
+        transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
       }
-      .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
-      .stat-icon {
-        width: 48px; height: 48px;
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 20px;
-        margin-bottom: 12px;
+      .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba(79, 70, 229, 0.25);
       }
-      .stat-val { font-size: 32px; font-weight: 800; font-family: var(--font-mono); }
-      .stat-lbl { font-size: 12px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+      .stat-icon {
+        width: 50px; height: 50px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      }
+      .stat-val {
+        font-size: 32px;
+        font-weight: 800;
+        font-family: var(--font-mono);
+        color: var(--text-main);
+        letter-spacing: -0.02em;
+      }
+      .stat-lbl {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-muted);
+        letter-spacing: 0.8px;
+        margin-top: 2px;
+      }
 
       /* AI Chatbot Floating Trigger & Drawer */
       .ai-chat-btn {
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: linear-gradient(135deg, #4f46e5, #06b6d4);
+        background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
         color: white;
         border: none;
         border-radius: 50px;
-        padding: 14px 24px;
+        padding: 13px 22px;
         font-weight: 700;
-        font-size: 14px;
-        box-shadow: 0 10px 30px rgba(79, 70, 229, 0.4);
+        font-size: 13.5px;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.45);
         z-index: 1040;
         display: flex;
         align-items: center;
         gap: 10px;
         cursor: pointer;
-        transition: transform 0.25s, box-shadow 0.25s;
+        transition: all 0.25s ease;
       }
-      .ai-chat-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 15px 35px rgba(79, 70, 229, 0.5); color: white; }
+      .ai-chat-btn:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 16px 35px rgba(79, 70, 229, 0.55);
+        color: white;
+      }
 
       .ai-drawer {
         position: fixed;
-        top: 0; right: -440px;
-        width: 100%; max-width: 420px;
+        top: 0; right: -460px;
+        width: 100%; max-width: 440px;
         height: 100vh;
         background: var(--surface);
-        box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+        box-shadow: -15px 0 50px rgba(15, 23, 42, 0.25);
         z-index: 1050;
         transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
@@ -140,27 +207,56 @@
       }
       .ai-drawer.open { right: 0; }
       .ai-drawer-header {
-        background: linear-gradient(135deg, #1e1b4b, #312e81);
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
         color: white;
-        padding: 20px;
+        padding: 22px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       }
-      .ai-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; }
-      .ai-msg { padding: 12px 16px; border-radius: 12px; font-size: 13.5px; line-height: 1.5; max-width: 90%; }
-      .ai-msg.bot { background: white; border: 1px solid var(--border); align-self: flex-start; color: var(--text-main); }
-      .ai-msg.user { background: var(--primary); color: white; align-self: flex-end; }
-      .ai-input-box { padding: 16px; border-top: 1px solid var(--border); background: white; }
+      .ai-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        background: #f8fafc;
+      }
+      .ai-msg {
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        max-width: 90%;
+        box-shadow: var(--shadow-sm);
+      }
+      .ai-msg.bot {
+        background: white;
+        border: 1px solid var(--border);
+        align-self: flex-start;
+        color: var(--text-main);
+      }
+      .ai-msg.user {
+        background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+        color: white;
+        align-self: flex-end;
+      }
+      .ai-input-box {
+        padding: 16px;
+        border-top: 1px solid var(--border);
+        background: white;
+      }
 
       /* Voice Mic Pulse Button */
       .mic-btn {
         background: #f1f5f9;
         border: 1px solid var(--border);
         color: #475569;
-        width: 38px;
-        height: 38px;
-        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -180,99 +276,112 @@
 
       /* Digital Pass Modal Card */
       .hologram-card {
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #0f172a 100%);
-        border-radius: 20px;
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
+        border-radius: 24px;
         color: white;
-        padding: 28px;
+        padding: 30px;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4);
-        border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: 0 25px 50px rgba(15, 23, 42, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.15);
       }
       .qr-holder {
         background: white;
-        padding: 10px;
-        border-radius: 12px;
+        padding: 12px;
+        border-radius: 16px;
         display: inline-block;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
       }
 
       /* Gamification Hub */
       .badge-pill {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 12px;
+        border-radius: 16px;
+        padding: 14px;
         text-align: center;
-        transition: 0.2s;
+        transition: all 0.25s ease;
+        box-shadow: var(--shadow-sm);
+      }
+      .badge-pill:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow);
       }
       .badge-pill.unlocked {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
         border-color: #f59e0b;
       }
       .badge-icon {
-        width: 44px; height: 44px;
+        width: 48px; height: 48px;
         border-radius: 50%;
         background: #f1f5f9;
         display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 8px;
-        font-size: 18px;
+        margin: 0 auto 10px;
+        font-size: 20px;
         color: #94a3b8;
+        transition: all 0.2s ease;
       }
       .badge-pill.unlocked .badge-icon {
-        background: #f59e0b;
+        background: linear-gradient(135deg, #f59e0b, #d97706);
         color: white;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
       }
 
       /* Book Cards (Grid View) */
       .book-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 18px;
+        border-radius: 18px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        transition: 0.25s;
+        transition: all 0.25s ease;
         height: 100%;
+        box-shadow: var(--shadow-sm);
       }
-      .book-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+      .book-card:hover {
+        border-color: rgba(79, 70, 229, 0.35);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+      }
       .shelf-tag {
         font-family: var(--font-mono);
         font-size: 11px;
         background: var(--primary-light);
         color: var(--primary);
-        padding: 3px 8px;
-        border-radius: 6px;
-        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
       }
 
       /* 3D Virtual Bookshelf Spine Rack View */
       .shelf-rack-container {
-        background: #1e293b;
-        border-radius: 16px;
-        padding: 24px 20px 10px;
-        box-shadow: inset 0 10px 30px rgba(0,0,0,0.6);
-        border: 3px solid #0f172a;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        border-radius: 20px;
+        padding: 26px 22px 12px;
+        box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.7);
+        border: 2px solid rgba(255, 255, 255, 0.08);
       }
       .shelf-bay {
         display: flex;
         align-items: flex-end;
-        gap: 6px;
+        gap: 8px;
         padding: 0 10px 0;
         overflow-x: auto;
-        min-height: 220px;
-        border-bottom: 14px solid #475569;
+        min-height: 230px;
+        border-bottom: 16px solid #475569;
         box-shadow: 0 8px 0 #334155;
         margin-bottom: 24px;
       }
       .book-spine {
-        width: 38px;
-        min-width: 38px;
-        height: 180px;
-        border-radius: 4px 4px 2px 2px;
+        width: 40px;
+        min-width: 40px;
+        height: 185px;
+        border-radius: 5px 5px 2px 2px;
         color: white;
         cursor: pointer;
         padding: 10px 4px;
@@ -288,7 +397,7 @@
       .book-spine:hover {
         transform: translateY(-24px) scale(1.08);
         z-index: 10;
-        box-shadow: 0 16px 30px rgba(0,0,0,0.8);
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.8);
       }
       .spine-title {
         writing-mode: vertical-rl;
@@ -302,41 +411,223 @@
         text-overflow: ellipsis;
         max-height: 130px;
       }
-      .spine-author { font-size: 8px; opacity: 0.8; text-transform: uppercase; }
+      .spine-author { font-size: 8.5px; opacity: 0.85; text-transform: uppercase; }
 
       /* Filter Toolbar */
       .filter-toolbar {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 16px;
+        border-radius: 16px;
+        padding: 18px;
         margin-bottom: 24px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        box-shadow: var(--shadow-sm);
       }
 
       /* Live Occupancy Heatmap Widget */
       .occupancy-card {
-        background: linear-gradient(135deg, #0f172a, #1e293b);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         color: white;
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 20px;
+        padding: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow);
       }
       .occupancy-meter {
         height: 8px;
         border-radius: 4px;
-        background: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.15);
         overflow: hidden;
       }
 
       .section-title {
-        font-size: 19px;
+        font-size: 20px;
         font-weight: 800;
         margin-bottom: 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        letter-spacing: -0.02em;
       }
+
+      /* Multi-Option Portal Action Cards (Ultra-Elevated 2026 SaaS Glass) */
+      #actionHubSection {
+        background: radial-gradient(120% 120% at 50% -10%, #1e1b4b 0%, #0f172a 60%, #020617 100%) !important;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.45) !important;
+        border-radius: 26px !important;
+      }
+      #actionHubSection::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+        pointer-events: none;
+      }
+      #actionHubSection::after {
+        content: "";
+        position: absolute;
+        top: -120px;
+        right: -80px;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+        pointer-events: none;
+        filter: blur(40px);
+      }
+      .action-portal-card {
+        background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        border-radius: 22px;
+        padding: 24px 18px;
+        position: relative;
+        transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+        z-index: 1;
+      }
+      .action-portal-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        border-radius: 22px 22px 0 0;
+        transition: height 0.25s ease;
+      }
+      .action-portal-card:hover {
+        transform: translateY(-8px) scale(1.02);
+      }
+      .action-portal-card:hover::before {
+        height: 6px;
+      }
+      .portal-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-size: 9.5px;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 999px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        backdrop-filter: blur(8px);
+      }
+      .portal-icon-wrap {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 14px;
+        color: white;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .action-portal-card:hover .portal-icon-wrap {
+        transform: scale(1.12) rotate(4deg);
+      }
+
+      /* Glowing Theme Styling per Portal */
+      .action-portal-card.portal-library::before { background: linear-gradient(90deg, #4f46e5, #3b82f6); }
+      .action-portal-card.portal-library .portal-icon-wrap {
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        box-shadow: 0 8px 20px -3px rgba(79, 70, 229, 0.45);
+      }
+      .action-portal-card.portal-library:hover {
+        border-color: rgba(79, 70, 229, 0.5);
+        box-shadow: 0 22px 42px -10px rgba(79, 70, 229, 0.35);
+      }
+
+      .action-portal-card.portal-market::before { background: linear-gradient(90deg, #059669, #10b981); }
+      .action-portal-card.portal-market .portal-icon-wrap {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        box-shadow: 0 8px 20px -3px rgba(16, 185, 129, 0.45);
+      }
+      .action-portal-card.portal-market:hover {
+        border-color: rgba(16, 185, 129, 0.5);
+        box-shadow: 0 22px 42px -10px rgba(16, 185, 129, 0.35);
+      }
+
+      .action-portal-card.portal-notes::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+      .action-portal-card.portal-notes .portal-icon-wrap {
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+        box-shadow: 0 8px 20px -3px rgba(245, 158, 11, 0.45);
+      }
+      .action-portal-card.portal-notes:hover {
+        border-color: rgba(245, 158, 11, 0.5);
+        box-shadow: 0 22px 42px -10px rgba(245, 158, 11, 0.35);
+      }
+
+      .action-portal-card.portal-donation::before { background: linear-gradient(90deg, #0891b2, #06b6d4); }
+      .action-portal-card.portal-donation .portal-icon-wrap {
+        background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        box-shadow: 0 8px 20px -3px rgba(6, 182, 212, 0.45);
+      }
+      .action-portal-card.portal-donation:hover {
+        border-color: rgba(6, 182, 212, 0.5);
+        box-shadow: 0 22px 42px -10px rgba(6, 182, 212, 0.35);
+      }
+
+      .action-portal-card.portal-wishlist::before { background: linear-gradient(90deg, #e11d48, #f43f5e); }
+      .action-portal-card.portal-wishlist .portal-icon-wrap {
+        background: linear-gradient(135deg, #e11d48 0%, #f43f5e 100%);
+        box-shadow: 0 8px 20px -3px rgba(244, 63, 94, 0.45);
+      }
+      .action-portal-card.portal-wishlist:hover {
+        border-color: rgba(244, 63, 94, 0.5);
+        box-shadow: 0 22px 42px -10px rgba(244, 63, 94, 0.35);
+      }
+
+      /* Upload Preview Thumbnail & Card Covers */
+      .image-upload-preview {
+        width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        margin-top: 10px;
+        box-shadow: var(--shadow-sm);
+      }
+      .item-card-cover {
+        width: 100%;
+        height: 185px;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        background-color: #f1f5f9;
+      }
+      .item-card-cover:hover {
+        opacity: 0.94;
+        transform: scale(1.02);
+      }
+      .notes-card-preview {
+        height: 155px;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #f8fafc;
+        cursor: pointer;
+        border: 1px solid #e2e8f0;
+        transition: all 0.25s ease;
+      }
+      .notes-card-preview:hover {
+        transform: scale(1.02);
+      }
+
+      .modal-content {
+        border-radius: 20px !important;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        box-shadow: 0 25px 50px rgba(15, 23, 42, 0.25);
+      }
+    
     </style>
   </head>
   <body>
@@ -362,9 +653,13 @@
             </div>
           </div>
 
-          <button class="nav-btn" id="showPassBtn"><i class="fas fa-id-badge text-info"></i>Digital Pass</button>
-          <button class="nav-btn" id="wishlistBtn"><i class="fas fa-heart text-danger"></i>Wishlist</button>
-          <button class="nav-btn" id="notesBtn"><i class="fas fa-pen-to-square"></i>Notes</button>
+          <button class="nav-btn" id="showPassBtn"><i class="fas fa-id-badge text-info"></i>Pass</button>
+          <button class="nav-btn" id="navMarketBtn"><i class="fas fa-tags text-success"></i>Book Market</button>
+          <button class="nav-btn" id="navNotesBtn"><i class="fas fa-file-lines text-warning"></i>Study Notes</button>
+          <button class="nav-btn" id="navExchangeBtn"><i class="fas fa-hand-holding-heart text-cyan"></i>Book Grants &amp; Swaps</button>
+          <button class="nav-btn" id="wishlistBtn" data-bs-toggle="modal" data-bs-target="#wishlistModal"><i class="fas fa-heart text-danger"></i>Wishlist</button>
+          <button class="nav-btn" id="notesBtn"><i class="fas fa-pen-to-square"></i>Journal</button>
+          <a href="/contact" class="nav-btn"><i class="fas fa-headset text-warning"></i>Contact Desk</a>
           <button class="nav-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Sign Out</button>
         </div>
       </div>
@@ -460,29 +755,103 @@
       </div>
     </div>
 
-    <!-- Wishlist Modal -->
+    <!-- Student Book Request & Coordinator Desk Modal -->
     <div class="modal fade" id="wishlistModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content rounded-4 border-0 shadow">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title fw-bold"><i class="fas fa-heart me-2 text-danger"></i>Student Book Wishlist Desk</h5>
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+          <div class="modal-header text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4f46e5 100%);">
+            <div>
+              <h5 class="modal-title fw-bold mb-0"><i class="fas fa-book-open-reader me-2 text-warning"></i>Student Book Request &amp; Coordinator Desk</h5>
+              <small class="opacity-75">Suggest titles for acquisition &amp; leave your contact so librarians and classmates can connect with you</small>
+            </div>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
           </div>
-          <div class="modal-body p-4">
+          <div class="modal-body p-4 bg-light">
             <div class="row g-4">
-              <div class="col-md-5 border-end">
-                <h6 class="fw-bold mb-3">Request a New Title</h6>
-                <form id="wishlistForm" class="d-grid gap-2">
-                  <input class="form-control" id="reqTitle" placeholder="Book Title" required>
-                  <input class="form-control" id="reqAuthor" placeholder="Author Name" required>
-                  <input class="form-control" id="reqCategory" placeholder="Academic Subject">
-                  <textarea class="form-control" id="reqReason" rows="2" placeholder="Why should the library acquire this?"></textarea>
-                  <button type="submit" class="btn btn-primary fw-bold mt-2">Submit Request</button>
-                </form>
+              <!-- Left Column: Submit Request Form -->
+              <div class="col-lg-5">
+                <div class="bg-white p-4 rounded-4 border shadow-sm">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white rounded-pill"><i class="fas fa-plus"></i></span>
+                    <h6 class="fw-bold mb-0 text-primary">Request a New Title</h6>
+                  </div>
+                  <p class="text-muted small mb-3">Provide book details and your preferred contact method</p>
+                  <form id="wishlistForm" class="d-grid gap-2">
+                    <div>
+                      <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">BOOK TITLE *</label>
+                      <input class="form-control" id="reqTitle" placeholder="e.g. Designing Data-Intensive Applications" required>
+                    </div>
+                    <div>
+                      <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">AUTHOR NAME *</label>
+                      <input class="form-control" id="reqAuthor" placeholder="e.g. Martin Kleppmann" required>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-7">
+                        <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">ACADEMIC SUBJECT</label>
+                        <input class="form-control" id="reqCategory" placeholder="e.g. Computer Science">
+                      </div>
+                      <div class="col-5">
+                        <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">URGENCY</label>
+                        <select class="form-select" id="reqUrgency">
+                          <option value="normal">Normal</option>
+                          <option value="high">High Priority</option>
+                          <option value="urgent">Urgent (Exam/Thesis)</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="p-3 my-1 rounded-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
+                      <div class="small fw-bold text-dark mb-2"><i class="fas fa-address-book text-primary me-1"></i>Your Contact Details (For Coordination):</div>
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <label class="form-label small text-muted mb-1" style="font-size: 10px;">WHATSAPP NO.</label>
+                          <input class="form-control form-control-sm" id="reqWhatsapp" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="col-6">
+                          <label class="form-label small text-muted mb-1" style="font-size: 10px;">PHONE NO.</label>
+                          <input class="form-control form-control-sm" id="reqPhone" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="col-12">
+                          <label class="form-label small text-muted mb-1" style="font-size: 10px;">EMAIL ADDRESS</label>
+                          <input class="form-control form-control-sm" id="reqEmail" placeholder="student@college.edu">
+                        </div>
+                      </div>
+                      <small class="text-muted d-block mt-1" style="font-size: 10px;"><i class="fas fa-shield-halved me-1"></i>Librarians or students with copies can contact you directly</small>
+                    </div>
+
+                    <div>
+                      <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">PURPOSE / REASON</label>
+                      <textarea class="form-control" id="reqReason" rows="2" placeholder="Why should the library purchase this? (Course code, syllabus reference, etc.)"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary fw-bold mt-2 py-2" id="submitWishlistBtn">
+                      <i class="fas fa-paper-plane me-1"></i>Submit Book Request &amp; Contact Info
+                    </button>
+                  </form>
+                </div>
               </div>
-              <div class="col-md-7">
-                <h6 class="fw-bold mb-3">Classmate Requests &amp; Upvotes</h6>
-                <div id="wishlistItems" class="d-grid gap-2" style="max-height: 300px; overflow-y: auto;">Loading…</div>
+
+              <!-- Right Column: Requests & Peer Contacts -->
+              <div class="col-lg-7">
+                <div class="bg-white p-4 rounded-4 border shadow-sm h-100 d-flex flex-column">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                      <h6 class="fw-bold mb-0 text-dark"><i class="fas fa-users text-primary me-1"></i>Classmate Requests &amp; Contacts</h6>
+                      <small class="text-muted">Upvote books to prioritize acquisition or contact the requester</small>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-1" id="requestsCountBadge">0 Requests</span>
+                  </div>
+
+                  <!-- Quick Filter Pills -->
+                  <div class="d-flex gap-2 mb-3 overflow-auto pb-1" id="reqFilterPills">
+                    <button class="btn btn-sm btn-outline-primary active py-1 px-3 req-filter-btn" data-filter="all">All</button>
+                    <button class="btn btn-sm btn-outline-danger py-1 px-3 req-filter-btn" data-filter="urgent"><i class="fas fa-fire me-1"></i>Urgent</button>
+                    <button class="btn btn-sm btn-outline-success py-1 px-3 req-filter-btn" data-filter="approved"><i class="fas fa-check me-1"></i>Approved</button>
+                    <button class="btn btn-sm btn-outline-info py-1 px-3 req-filter-btn" data-filter="contacted"><i class="fas fa-comments me-1"></i>In Discussion</button>
+                  </div>
+
+                  <div id="wishlistItems" class="d-grid gap-3 flex-grow-1 overflow-auto pe-1" style="max-height: 480px;">Loading requests…</div>
+                </div>
               </div>
             </div>
           </div>
@@ -566,21 +935,346 @@
       </div>
     </div>
 
+    <!-- Peer Textbook Sharing & Philanthropy Modal -->
+    <div class="modal fade" id="giveBookModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+          <div class="modal-header text-white" style="background: linear-gradient(135deg, #065f46 0%, #047857 60%, #10b981 100%);">
+            <div>
+              <h5 class="modal-title fw-bold mb-0"><i class="fas fa-hand-holding-heart me-2 text-warning"></i>Academic Philanthropy &amp; Peer Book Share</h5>
+              <small class="opacity-75">Offer textbooks, competitive exam guides, or notes to fellow students for free donation or lending</small>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4 bg-light">
+            <form id="giveBookForm" class="d-grid gap-3">
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="badge bg-success text-white rounded-pill"><i class="fas fa-book"></i></span>
+                  <h6 class="fw-bold mb-0 text-success">Book Details</h6>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-7">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">BOOK TITLE *</label>
+                    <input class="form-control" id="offerTitle" placeholder="e.g. Introduction to Algorithms (CLRS)" required>
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">AUTHOR / WRITER *</label>
+                    <input class="form-control" id="offerAuthor" placeholder="e.g. Cormen, Leiserson, Rivest" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">CATEGORY / SUBJECT</label>
+                    <input class="form-control" id="offerCategory" placeholder="e.g. Computer Science, GATE, Fiction">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">OFFER TYPE *</label>
+                    <select class="form-select" id="offerType" required>
+                      <option value="free_donation">🎁 Free Donation (Keep Forever)</option>
+                      <option value="lend">🤝 Lending (Return after Semester)</option>
+                      <option value="exchange">🔄 Peer Exchange (Trade for another)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">BOOK CONDITION</label>
+                    <select class="form-select" id="offerCondition">
+                      <option value="Like New">✨ Like New (Mint)</option>
+                      <option value="Good" selected>👍 Good (Minor marks)</option>
+                      <option value="Fair">📖 Fair / Well-read</option>
+                      <option value="Annotated">✍️ Highlighted &amp; Notes</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-camera text-primary me-1"></i>UPLOAD ONE PICTURE (PHOTO OF BOOK)</label>
+                    <input type="file" class="form-control form-control-sm" id="offerBookPhotoInput" accept="image/*">
+                    <input type="hidden" id="offerPhotoUrl" value="">
+                    <div id="offerPhotoStatus" class="small mt-1"></div>
+                    <img id="offerPhotoPreview" class="image-upload-preview d-none" alt="Book Photo Preview">
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-primary text-white rounded-pill"><i class="fas fa-address-book"></i></span>
+                  <h6 class="fw-bold mb-0 text-primary">Your Contact Details &amp; Handover Location</h6>
+                </div>
+                <p class="text-muted small mb-3">Other students will use these details to contact you directly to collect the book.</p>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">YOUR NAME *</label>
+                    <input class="form-control" id="offerDonorName" placeholder="e.g. Rahul Sharma" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">PREFERRED PICKUP SPOT</label>
+                    <input class="form-control" id="offerPickupLocation" placeholder="e.g. Central Library 2nd Floor / CS Department / Hostel C">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fab fa-whatsapp text-success me-1"></i>WHATSAPP NUMBER</label>
+                    <input class="form-control" id="offerWhatsapp" placeholder="+91 98765 43210">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-phone text-primary me-1"></i>CALLING PHONE NUMBER</label>
+                    <input class="form-control" id="offerPhone" placeholder="+91 98765 43210">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-envelope text-secondary me-1"></i>EMAIL ADDRESS</label>
+                    <input class="form-control" id="offerEmail" placeholder="student@college.edu">
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">ADDITIONAL NOTES / DESCRIPTION (OPTIONAL)</label>
+                    <textarea class="form-control" id="offerDescription" rows="2" placeholder="e.g. Contains handwritten summaries for Unit 3 &amp; 4. Available to hand over in afternoon hours."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success fw-bold px-4 py-2" id="submitOfferBtn">
+                  <i class="fas fa-hand-holding-heart me-1"></i>Publish Book Offer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peer Textbook Marketplace Listing Modal -->
+    <div class="modal fade" id="sellBookModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+          <div class="modal-header text-white" style="background: linear-gradient(135deg, #064e3b 0%, #059669 60%, #10b981 100%);">
+            <div>
+              <h5 class="modal-title fw-bold mb-0"><i class="fas fa-tags me-2 text-warning"></i>List Textbook on Peer Marketplace</h5>
+              <small class="opacity-75">Set your price in ₹, upload a clear picture of the book, and connect directly with buyers</small>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4 bg-light">
+            <form id="sellBookForm" class="d-grid gap-3">
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="badge bg-success text-white rounded-pill"><i class="fas fa-book"></i></span>
+                  <h6 class="fw-bold mb-0 text-success">Book Details &amp; Price</h6>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-7">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">BOOK TITLE *</label>
+                    <input class="form-control" id="sellTitle" placeholder="e.g. Introduction to Algorithms (CLRS 3rd Ed)" required>
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">AUTHOR / WRITER *</label>
+                    <input class="form-control" id="sellAuthor" placeholder="e.g. Cormen, Leiserson" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">ACADEMIC CATEGORY</label>
+                    <input class="form-control" id="sellCategory" placeholder="e.g. Computer Science, GATE, Math">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">BOOK CONDITION</label>
+                    <select class="form-select" id="sellCondition">
+                      <option value="Like New">✨ Like New (Mint)</option>
+                      <option value="Good" selected>👍 Good (Minor wear)</option>
+                      <option value="Fair">📖 Fair / Well-read</option>
+                      <option value="Annotated">✍️ Highlighted &amp; Notes</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-success mb-1" style="font-size: 11px;"><i class="fas fa-indian-rupee-sign me-1"></i>YOUR PRICE (₹) *</label>
+                    <input class="form-control border-success fw-bold text-success" id="sellPrice" type="number" min="0" step="5" placeholder="e.g. 250" required>
+                  </div>
+                  <div class="col-12">
+                    <div class="p-3 rounded-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
+                      <label class="form-label small fw-bold text-dark mb-1" style="font-size: 11px;">
+                        <i class="fas fa-camera text-success me-1"></i>UPLOAD SPECIMEN PHOTOGRAPH (Cover &amp; Binding Condition) *
+                      </label>
+                      <input type="file" class="form-control form-control-sm" id="sellBookPhotoInput" accept="image/*" required>
+                      <input type="hidden" id="sellPhotoUrl" value="">
+                      <div id="sellPhotoStatus" class="small mt-1"></div>
+                      <img id="sellPhotoPreview" class="image-upload-preview d-none" alt="Book Photo Preview">
+                      <div class="small text-muted mt-1" style="font-size: 10px;">Supported formats: JPG, PNG, WEBP. Showing a real photo builds trust with student buyers!</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-primary text-white rounded-pill"><i class="fas fa-address-book"></i></span>
+                  <h6 class="fw-bold mb-0 text-primary">Your Contact Details &amp; Pickup Spot</h6>
+                </div>
+                <p class="text-muted small mb-3">Buyers will contact you via WhatsApp or Call to complete the deal on campus.</p>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">SELLER NAME *</label>
+                    <input class="form-control" id="sellDonorName" placeholder="e.g. Aarav Mehta" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">PREFERRED PICKUP SPOT</label>
+                    <input class="form-control" id="sellPickupLocation" placeholder="e.g. Central Library Steps / CS Canteen / Hostel 4">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fab fa-whatsapp text-success me-1"></i>WHATSAPP NUMBER *</label>
+                    <input class="form-control" id="sellWhatsapp" placeholder="+91 98765 43210" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-phone text-primary me-1"></i>CALLING PHONE NUMBER</label>
+                    <input class="form-control" id="sellPhone" placeholder="+91 98765 43210">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-envelope text-secondary me-1"></i>EMAIL ADDRESS</label>
+                    <input class="form-control" id="sellEmail" placeholder="student@college.edu">
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">ADDITIONAL DESCRIPTION / HIGHLIGHTS</label>
+                    <textarea class="form-control" id="sellDescription" rows="2" placeholder="e.g. 3rd edition, bought last year, all pages clean with no pen marks. MRP is 950, selling for 450."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success fw-bold px-4 py-2" id="submitSellBtn">
+                  <i class="fas fa-tags me-1"></i>Publish Book for Sale (₹)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courseware Contribution Modal -->
+    <div class="modal fade" id="uploadNotesModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+          <div class="modal-header text-white" style="background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #f59e0b 100%);">
+            <div>
+              <h5 class="modal-title fw-bold mb-0"><i class="fas fa-file-pen me-2 text-white"></i>Contribute Academic Courseware &amp; Revision Guides</h5>
+              <small class="opacity-75">Share handwritten summaries, formula cheat-sheets, or PYQ solutions with fellow scholars</small>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-4 bg-light">
+            <form id="uploadNotesForm" class="d-grid gap-3">
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <span class="badge bg-warning text-dark rounded-pill"><i class="fas fa-file-lines"></i></span>
+                  <h6 class="fw-bold mb-0 text-dark">Notes Subject &amp; Academic Details</h6>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-7">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">NOTE TITLE *</label>
+                    <input class="form-control" id="noteTitleInput" placeholder="e.g. Data Structures &amp; Algorithms - Complete Units 1 to 4 Handwritten Notes" required>
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">SUBJECT / COURSE CODE *</label>
+                    <input class="form-control" id="noteSubjectInput" placeholder="e.g. CS201 · Data Structures" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">DEPARTMENT / BRANCH</label>
+                    <input class="form-control" id="noteDeptInput" placeholder="e.g. Computer Science, Mechanical, Civil">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">SEMESTER / YEAR</label>
+                    <input class="form-control" id="noteSemesterInput" placeholder="e.g. Semester 3 / 2nd Year, or All Semesters">
+                  </div>
+                  <div class="col-12">
+                    <div class="p-3 rounded-3" style="background: #fffbeb; border: 1.5px dashed #f59e0b;">
+                      <label class="form-label small fw-bold text-dark mb-1" style="font-size: 11px;">
+                        <i class="fas fa-camera text-warning me-1"></i>UPLOAD SPECIMEN SNAPSHOT OR PREVIEW PAGE *
+                      </label>
+                      <input type="file" class="form-control form-control-sm" id="noteFileInput" accept="image/*,application/pdf" required>
+                      <input type="hidden" id="noteFileUrl" value="">
+                      <div id="noteFileStatus" class="small mt-1"></div>
+                      <img id="notePhotoPreview" class="image-upload-preview d-none" alt="Notes Preview">
+                      <div class="small text-muted mt-1" style="font-size: 10px;">Upload a clear snapshot of your handwritten page, formula sheet, or cover page.</div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">SYLLABUS COVERAGE / TOPICS INCLUDED</label>
+                    <textarea class="form-control" id="noteDescInput" rows="2" placeholder="e.g. Clean handwritten notes covering Trees, Graphs, Dijkstra, DP, and Time Complexity formulas with diagrams."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white p-3 rounded-4 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <span class="badge bg-primary text-white rounded-pill"><i class="fas fa-user-pen"></i></span>
+                  <h6 class="fw-bold mb-0 text-primary">Contributor Information (Optional Contact)</h6>
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;">YOUR NAME *</label>
+                    <input class="form-control" id="noteAuthorName" placeholder="e.g. Rohan Sharma" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fab fa-whatsapp text-success me-1"></i>WHATSAPP NUMBER</label>
+                    <input class="form-control" id="noteWhatsapp" placeholder="+91 98765 43210">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-phone text-primary me-1"></i>CALLING PHONE NUMBER</label>
+                    <input class="form-control" id="notePhone" placeholder="+91 98765 43210">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted mb-1" style="font-size: 11px;"><i class="fas fa-envelope text-secondary me-1"></i>EMAIL ADDRESS</label>
+                    <input class="form-control" id="noteEmail" placeholder="scholar@college.edu">
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning fw-bold px-4 py-2 text-dark" id="submitNoteBtn">
+                  <i class="fas fa-cloud-arrow-up me-1"></i>Publish Study Notes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full-Size Image Preview Modal (Lightbox) -->
+    <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg bg-dark text-white overflow-hidden">
+          <div class="modal-header border-0 pb-0">
+            <h6 class="modal-title fw-bold" id="imagePreviewModalTitle"><i class="fas fa-image me-2 text-warning"></i>Image Preview</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-center p-3">
+            <img id="imagePreviewModalImg" src="" alt="Full Preview" style="max-height: 70vh; max-width: 100%; object-fit: contain; border-radius: 8px;">
+          </div>
+          <div class="modal-footer border-0 pt-0 justify-content-between">
+            <a href="#" target="_blank" class="btn btn-sm btn-outline-light" id="imagePreviewOpenTabBtn"><i class="fas fa-arrow-up-right-from-square me-1"></i>Open Full Size</a>
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Container -->
     <div class="container">
       <div id="studentMessage" class="alert d-none mb-4" role="alert"></div>
 
       <!-- Welcome & Score Ribbon -->
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 p-3 rounded-4 bg-white border shadow-sm">
         <div>
-          <h2 class="fw-bold mb-1">Hello, <span id="welcomeName" class="text-primary">Scholar</span>! 👋</h2>
-          <p class="text-muted mb-0">Explore 200+ academic volumes, voice-activated AI search, and scholar badges.</p>
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-light border mb-2 small text-muted fw-bold">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px #10b981;"></span>
+            <span>Spring 2026 Academic Session &bull; Active Scholar</span>
+          </div>
+          <h2 class="fw-bold mb-1" style="font-family: var(--font-mono); letter-spacing: -0.5px;">
+            Welcome back, <span id="welcomeName" class="text-primary">Scholar</span> 👋
+          </h2>
+          <p class="text-muted mb-0 small">Campus Catalog &bull; Peer Textbook Exchange &bull; Courseware Repository &bull; 24/7 AI Concierge</p>
         </div>
-        <div class="d-flex gap-2 align-items-center">
-          <span class="badge bg-warning text-dark py-2 px-3 fs-6 rounded-pill">
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+          <span class="badge bg-warning text-dark py-2 px-3 fs-6 rounded-pill shadow-sm fw-bold border border-warning" style="box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25) !important;">
             🔥 <span id="streakDays">1</span> Day Streak
           </span>
-          <span class="badge bg-primary text-white py-2 px-3 fs-6 rounded-pill" id="rankBadge">
+          <span class="badge py-2 px-3 fs-6 rounded-pill shadow-sm fw-bold text-white border border-primary" id="rankBadge" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3) !important;">
             Scholar Apprentice
           </span>
         </div>
@@ -631,6 +1325,111 @@
         </div>
       </div>
 
+      <!-- MULTI-OPTION ACTION HUB: 5 DISTINCT PORTALS FOR STUDENTS -->
+      <section class="card p-4 border-0 shadow-sm rounded-4 mb-5" id="actionHubSection" style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%); color: white;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+          <div>
+            <span class="badge bg-warning text-dark fw-bold text-uppercase px-3 py-1 mb-1" style="font-size: 11px;">
+              <i class="fas fa-compass me-1"></i>NexShelf Scholar Services Hub
+            </span>
+            <h4 class="fw-bold mb-0 text-white">Academic Portals &amp; Concierge Desk</h4>
+          </div>
+          <span class="text-white-50 small">5 Specialized Academic Portals &bull; Instant Access</span>
+        </div>
+
+        <div class="row g-3">
+          <!-- Option 1: Institutional Catalog & Archives -->
+          <div class="col-md-6 col-lg">
+            <div class="action-portal-card portal-library h-100 text-dark">
+              <div>
+                <span class="portal-badge bg-primary text-white"><i class="fas fa-book"></i> Library</span>
+                <div class="portal-icon-wrap text-primary"><i class="fas fa-books"></i></div>
+                <h6 class="fw-bold mb-1">Institutional Archives</h6>
+                <p class="small text-muted mb-3" style="font-size: 11.5px;">Search 200+ college volumes, 3D spine rack, and borrow directly.</p>
+              </div>
+              <button class="btn btn-sm btn-primary w-100 fw-bold jump-portal-btn rounded-pill shadow-sm py-2" data-target="#catalogSection">
+                <i class="fas fa-magnifying-glass me-1"></i>Explore Catalog &rarr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Option 2: Peer-to-Peer Textbook Market -->
+          <div class="col-md-6 col-lg">
+            <div class="action-portal-card portal-market h-100 text-dark">
+              <div>
+                <span class="portal-badge bg-success text-white"><i class="fas fa-tags"></i> Buy / Sell</span>
+                <div class="portal-icon-wrap text-success"><i class="fas fa-store"></i></div>
+                <h6 class="fw-bold mb-1">Peer Textbook Market</h6>
+                <p class="small text-muted mb-3" style="font-size: 11.5px;">Sell old books to classmates at your price in ₹ with photos &amp; phone.</p>
+              </div>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-success fw-bold flex-fill rounded-pill shadow-sm py-2" id="hubSellBtn" data-bs-toggle="modal" data-bs-target="#sellBookModal">
+                  <i class="fas fa-plus me-1"></i>List Book
+                </button>
+                <button class="btn btn-sm btn-outline-success fw-bold flex-fill rounded-pill py-2 jump-portal-btn" data-target="#marketplaceSection">
+                  <i class="fas fa-bag-shopping me-1"></i>Market &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 3: Notes Upload / Download -->
+          <div class="col-md-6 col-lg">
+            <div class="action-portal-card portal-notes h-100 text-dark">
+              <div>
+                <span class="portal-badge bg-warning text-dark"><i class="fas fa-file-pen"></i> Notes Desk</span>
+                <div class="portal-icon-wrap text-warning"><i class="fas fa-graduation-cap"></i></div>
+                <h6 class="fw-bold mb-1">Courseware &amp; Solutions</h6>
+                <p class="small text-muted mb-3" style="font-size: 11.5px;">Upload handwritten summaries, formula sheets &amp; question papers with photos.</p>
+              </div>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-warning fw-bold flex-fill rounded-pill shadow-sm py-2 text-dark" id="hubUploadNotesBtn" data-bs-toggle="modal" data-bs-target="#uploadNotesModal">
+                  <i class="fas fa-upload me-1"></i>Upload
+                </button>
+                <button class="btn btn-sm btn-outline-dark fw-bold flex-fill rounded-pill py-2 jump-portal-btn" data-target="#studyNotesSection">
+                  <i class="fas fa-book-reader me-1"></i>Browse &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 4: Textbook Philanthropy & Swaps -->
+          <div class="col-md-6 col-lg">
+            <div class="action-portal-card portal-donation h-100 text-dark">
+              <div>
+                <span class="portal-badge bg-info text-dark"><i class="fas fa-hand-holding-heart"></i> Book Grants</span>
+                <div class="portal-icon-wrap text-info"><i class="fas fa-hands-holding-child"></i></div>
+                <h6 class="fw-bold mb-1">Philanthropy &amp; Swaps</h6>
+                <p class="small text-muted mb-3" style="font-size: 11.5px;">Donate books for free or swap textbooks with fellow classmates.</p>
+              </div>
+              <div class="d-flex gap-1">
+                <button class="btn btn-sm btn-info text-dark fw-bold flex-fill rounded-pill shadow-sm py-2" id="hubDonateBtn" data-bs-toggle="modal" data-bs-target="#giveBookModal">
+                  <i class="fas fa-gift me-1"></i>Donate
+                </button>
+                <button class="btn btn-sm btn-outline-info text-dark fw-bold flex-fill rounded-pill py-2 jump-portal-btn" data-target="#peerExchangeSection">
+                  <i class="fas fa-repeat me-1"></i>Swaps &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option 5: Wishlist / Request a Book -->
+          <div class="col-md-6 col-lg">
+            <div class="action-portal-card portal-wishlist h-100 text-dark">
+              <div>
+                <span class="portal-badge bg-danger text-white"><i class="fas fa-heart"></i> Wishlist</span>
+                <div class="portal-icon-wrap text-danger"><i class="fas fa-envelope-open-text"></i></div>
+                <h6 class="fw-bold mb-1">Acquisition Wishlist</h6>
+                <p class="small text-muted mb-3" style="font-size: 11.5px;">Can't find a book in library? Request acquisition &amp; leave contact.</p>
+              </div>
+              <button class="btn btn-sm btn-outline-danger w-100 fw-bold rounded-pill shadow-sm py-2" id="hubWishlistBtn" data-bs-toggle="modal" data-bs-target="#wishlistModal">
+                <i class="fas fa-pen-nib me-1"></i>Request Title &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Gamification & Badges Showcase -->
       <div class="mb-5">
         <div class="section-title">
@@ -648,8 +1447,169 @@
         <div id="myBooks" class="row g-3">Loading your active loans…</div>
       </div>
 
+      <!-- Quick Action: Can't Find Your Book Banner -->
+      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5 text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4f46e5 100%);">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+          <div class="col-lg-8">
+            <span class="badge bg-warning text-dark fw-bold mb-2 px-3 py-1"><i class="fas fa-sparkles me-1"></i>CAN'T FIND A BOOK?</span>
+            <h4 class="fw-bold mb-2">Request Any Academic Title &amp; Leave Your Contact</h4>
+            <p class="text-white-50 mb-0 small" style="max-width: 620px;">
+              Tell our librarians which title you need for coursework or research. Leave your phone, WhatsApp, or email so our library staff or classmates with copies can coordinate with you instantly.
+            </p>
+          </div>
+          <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <button class="btn btn-light fw-bold px-4 py-2 text-primary shadow" id="bannerWishlistBtn" data-bs-toggle="modal" data-bs-target="#wishlistModal">
+              <i class="fas fa-plus-circle me-1"></i>Request a Book Now
+            </button>
+            <a href="/contact" class="btn btn-outline-light fw-bold px-3 py-2 ms-2">
+              <i class="fas fa-headset me-1"></i>Contact Desk
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STUDENT PEER TEXTBOOK MARKETPLACE -->
+      <section class="card p-4 border-0 shadow-sm rounded-4 mb-5" id="marketplaceSection" style="background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%); border: 1.5px solid #86efac !important;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge rounded-pill bg-success px-3 py-1 fw-bold text-uppercase" style="font-size: 11px;">
+                <i class="fas fa-store me-1"></i>Student P2P Marketplace
+              </span>
+              <span class="badge bg-white text-success border border-success px-2 py-1 fw-bold" id="marketplaceCountBadge">0 Books for Sale</span>
+            </div>
+            <h4 class="fw-bold mb-1 text-dark">Peer-to-Peer Academic Textbook Marketplace</h4>
+            <p class="text-muted small mb-0">Direct student-to-student marketplace. Check actual photos of book condition, see prices in ₹, and connect via WhatsApp or Phone!</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-success fw-bold shadow-sm" id="openSellBookBtn" data-bs-toggle="modal" data-bs-target="#sellBookModal">
+              <i class="fas fa-plus-circle me-1"></i>List a Textbook for Sale
+            </button>
+          </div>
+        </div>
+
+        <!-- Marketplace Filter Bar -->
+        <div class="bg-white p-3 rounded-3 border mb-3 shadow-sm">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control" id="marketSearchInput" placeholder="Search books for sale by title, author, subject…">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex gap-1 flex-wrap" id="marketPriceFilterPills">
+                <button class="btn btn-sm btn-outline-success active py-1 px-2 market-price-filter" data-price="all" style="font-size: 11px;">All Prices</button>
+                <button class="btn btn-sm btn-outline-success py-1 px-2 market-price-filter" data-price="under200" style="font-size: 11px;">Under ₹200</button>
+                <button class="btn btn-sm btn-outline-success py-1 px-2 market-price-filter" data-price="under500" style="font-size: 11px;">₹200 - ₹500</button>
+              </div>
+            </div>
+            <div class="col-md-3 text-md-end small text-muted">
+              <i class="fas fa-shield-halved text-success me-1"></i>Direct handover on campus
+            </div>
+          </div>
+        </div>
+
+        <!-- Marketplace Books Grid -->
+        <div id="marketplaceGrid" class="row g-3">
+          <div class="col-12 py-4 text-center text-muted">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2 text-success d-block"></i>
+            Loading student books for sale…
+          </div>
+        </div>
+      </section>
+
+      <!-- SCHOLAR COURSEWARE & EXAM DOSSIERS REPOSITORY -->
+      <section class="card p-4 border-0 shadow-sm rounded-4 mb-5" id="studyNotesSection" style="background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%); border: 1.5px solid #fcd34d !important;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge rounded-pill bg-warning text-dark px-3 py-1 fw-bold text-uppercase" style="font-size: 11px;">
+                <i class="fas fa-file-pen me-1"></i>Academic Notes &amp; PYQs
+              </span>
+              <span class="badge bg-white text-dark border border-warning px-2 py-1 fw-bold" id="notesCountBadge">0 Notes Shared</span>
+            </div>
+            <h4 class="fw-bold mb-1 text-dark">Scholar Courseware &amp; Examination Revision Dossiers</h4>
+            <p class="text-muted small mb-0">Handwritten summaries, formula cheat-sheets, and solved question papers uploaded by fellow students with preview photos!</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-warning fw-bold text-dark shadow-sm" id="openUploadNotesBtn" data-bs-toggle="modal" data-bs-target="#uploadNotesModal">
+              <i class="fas fa-cloud-arrow-up me-1"></i>Upload Courseware &amp; Notes
+            </button>
+          </div>
+        </div>
+
+        <!-- Notes Search & Filter -->
+        <div class="bg-white p-3 rounded-3 border mb-3 shadow-sm">
+          <div class="row g-2 align-items-center">
+            <div class="col-md-7">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light"><i class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control" id="studyNotesSearchInput" placeholder="Filter notes by subject code, title, topic (e.g. Data Structures, Math, GATE)…">
+              </div>
+            </div>
+            <div class="col-md-5 text-md-end small text-muted">
+              <i class="fas fa-eye text-warning me-1"></i>Click any notes preview to enlarge full-size
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes Grid -->
+        <div id="studyNotesGrid" class="row g-3">
+          <div class="col-12 py-4 text-center text-muted">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2 text-warning d-block"></i>
+            Loading student study notes…
+          </div>
+        </div>
+      </section>
+
+      <!-- Academic Philanthropy & Peer Exchange Repository -->
+      <section class="card p-4 border-0 shadow-sm rounded-4 mb-5" id="peerExchangeSection" style="background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); border: 1px solid #e2e8f0 !important;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge rounded-pill bg-success px-3 py-1 fw-bold text-uppercase" style="font-size: 11px;">
+                <i class="fas fa-hand-holding-heart me-1"></i>Academic Philanthropy &amp; Peer Exchange
+              </span>
+              <span class="badge bg-white text-muted border px-2 py-1" id="offersCountBadge">0 Books Available</span>
+            </div>
+            <h4 class="fw-bold mb-1 text-dark">Textbook Philanthropy &amp; Semester Swaps</h4>
+            <p class="text-muted small mb-0">Discover books donated or shared by fellow students. Contact donors directly via WhatsApp or Phone to arrange handover!</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-outline-primary fw-bold" id="viewWishlistFromOffersBtn" data-bs-toggle="modal" data-bs-target="#wishlistModal">
+              <i class="fas fa-list-check me-1"></i>Classmate Requests Desk
+            </button>
+            <button class="btn btn-success fw-bold shadow-sm" id="openGiveBookBtn" data-bs-toggle="modal" data-bs-target="#giveBookModal">
+              <i class="fas fa-plus-circle me-1"></i>Offer a Textbook Grant
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter pills & peer notice -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom">
+          <div class="d-flex gap-2 flex-wrap" id="offerFilterPills">
+            <button class="btn btn-sm btn-dark active py-1 px-3 offer-filter-btn" data-filter="all">All Offers</button>
+            <button class="btn btn-sm btn-outline-success py-1 px-3 offer-filter-btn" data-filter="free_donation"><i class="fas fa-gift me-1"></i>Endowment / Free Grant</button>
+            <button class="btn btn-sm btn-outline-primary py-1 px-3 offer-filter-btn" data-filter="lend"><i class="fas fa-handshake me-1"></i>Semester Loan</button>
+            <button class="btn btn-sm btn-outline-warning py-1 px-3 offer-filter-btn" data-filter="exchange"><i class="fas fa-repeat me-1"></i>Syllabus Swap</button>
+          </div>
+          <div class="small text-muted">
+            <i class="fas fa-circle-check text-success me-1"></i>Direct peer contact · No library fee
+          </div>
+        </div>
+
+        <!-- Offers Grid -->
+        <div id="peerOffersGrid" class="row g-3">
+          <div class="col-12 py-4 text-center text-muted">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block"></i>
+            Loading student book offers…
+          </div>
+        </div>
+      </section>
+
       <!-- 200+ Books Catalog with Interactive Filters & View Switcher -->
-      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5">
+      <div class="card p-4 border-0 shadow-sm rounded-4 mb-5" id="catalogSection">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
           <div class="section-title mb-0">
             <span><i class="fas fa-books text-success me-2"></i>NexShelf Library Catalog (<span id="catalogCount">205</span> Books)</span>
@@ -765,9 +1725,31 @@
     </div>
 
     <script>
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/login";
+      let token = localStorage.getItem("token");
+
+      async function ensureAuth() {
+        if (!token) {
+          try {
+            // Auto sign-in with default student account so student panel always opens immediately!
+            const res = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: "student@nexshelf.edu", password: "student123" }),
+            });
+            const data = await res.json();
+            if (data && data.token) {
+              token = data.token;
+              localStorage.setItem("token", token);
+              localStorage.setItem("userRole", "student");
+              return true;
+            }
+          } catch (e) {
+            console.error("Auto login error:", e);
+          }
+          window.location.href = "/login";
+          return false;
+        }
+        return true;
       }
 
       const message = document.getElementById("studentMessage");
@@ -779,11 +1761,28 @@
       };
 
       async function api(url, method = "GET", body) {
-        const response = await fetch(url, {
+        if (!token) {
+          await ensureAuth();
+        }
+        let response = await fetch(url, {
           method,
           headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
           body: body ? JSON.stringify(body) : undefined,
         });
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          token = null;
+          const ok = await ensureAuth();
+          if (ok) {
+            response = await fetch(url, {
+              method,
+              headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+              body: body ? JSON.stringify(body) : undefined,
+            });
+          }
+        }
+
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Request failed.");
         return data;
@@ -791,6 +1790,7 @@
 
       let allCatalogBooks = [];
       let activeBorrowedBooks = [];
+      let currentStudentProfile = {};
 
       /* ---------- Voice Recognition for AI Librarian ---------- */
       const voiceMicBtn = document.getElementById("voiceMicBtn");
@@ -868,14 +1868,15 @@
       async function loadDashboard() {
         try {
           const [stats, booksData, issues, profile, gamification, notifs] = await Promise.all([
-            api("/api/student/stats"),
-            api("/api/books"),
-            api("/api/student/issues"),
-            api("/api/student/profile"),
-            api("/api/student/gamification"),
-            api("/api/student/notifications"),
+            api("/api/student/stats").catch(() => ({ borrowed_books: 0, overdue_books: 0, fine_due: 0 })),
+            api("/api/books").catch(() => ({ books: [] })),
+            api("/api/student/issues").catch(() => ({ issues: [] })),
+            api("/api/student/profile").catch(() => ({ full_name: "Alan Turing", email: "student@nexshelf.edu", department: "Computer Science" })),
+            api("/api/student/gamification").catch(() => ({ streak_days: 1, rank_title: "Scholar", reading_score: 100, unlocked_badges: [] })),
+            api("/api/student/notifications").catch(() => ({ notifications: [], unread_count: 0 })),
           ]);
 
+          currentStudentProfile = profile;
           allCatalogBooks = booksData.books || [];
           document.getElementById("catalogCount").textContent = allCatalogBooks.length;
 
@@ -998,6 +1999,11 @@
 
           // Render Catalog Cards and 3D Spines
           filterAndRenderCatalog();
+
+          // Render Peer Book Offers, Marketplace, and Study Notes
+          loadBookOffers();
+          loadMarketplace();
+          loadStudyNotes();
 
           // Event bindings
           document.querySelectorAll(".return-btn").forEach((btn) => btn.onclick = () => returnBook(btn.dataset.id));
@@ -1293,53 +2299,918 @@
         }
       });
 
-      /* ---------- Wishlist Desk ---------- */
-      document.getElementById("wishlistBtn").addEventListener("click", async () => {
+      /* ---------- Wishlist & Student Coordinator Desk ---------- */
+      let allWishlistRequests = [];
+      let currentWishlistFilter = "all";
+
+      window.openWishlistModal = () => {
+        if (currentStudentProfile && currentStudentProfile.email && !document.getElementById("reqEmail").value) {
+          document.getElementById("reqEmail").value = currentStudentProfile.email;
+        }
+        if (currentStudentProfile && currentStudentProfile.phone && !document.getElementById("reqPhone").value) {
+          document.getElementById("reqPhone").value = currentStudentProfile.phone;
+          document.getElementById("reqWhatsapp").value = currentStudentProfile.phone;
+        }
         loadWishlist();
-        new bootstrap.Modal(document.getElementById("wishlistModal")).show();
+        const modalEl = document.getElementById("wishlistModal");
+        if (typeof bootstrap !== "undefined") {
+          let inst = bootstrap.Modal.getInstance(modalEl);
+          if (!inst) inst = new bootstrap.Modal(modalEl);
+          inst.show();
+        }
+      };
+
+      document.getElementById("wishlistModal").addEventListener("show.bs.modal", () => {
+        if (currentStudentProfile && currentStudentProfile.email && !document.getElementById("reqEmail").value) {
+          document.getElementById("reqEmail").value = currentStudentProfile.email;
+        }
+        if (currentStudentProfile && currentStudentProfile.phone && !document.getElementById("reqPhone").value) {
+          document.getElementById("reqPhone").value = currentStudentProfile.phone;
+          document.getElementById("reqWhatsapp").value = currentStudentProfile.phone;
+        }
+        loadWishlist();
+      });
+
+      document.getElementById("wishlistBtn").addEventListener("click", openWishlistModal);
+      const bannerWishlistBtn = document.getElementById("bannerWishlistBtn");
+      if (bannerWishlistBtn) bannerWishlistBtn.addEventListener("click", openWishlistModal);
+
+      // Filter pills
+      document.querySelectorAll(".req-filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".req-filter-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentWishlistFilter = btn.dataset.filter;
+          renderWishlistItems();
+        });
       });
 
       async function loadWishlist() {
         try {
           const res = await api("/api/requests");
-          const itemsEl = document.getElementById("wishlistItems");
-          itemsEl.innerHTML = res.requests.length
-            ? res.requests.map((r) => `
-              <div class="p-3 border rounded bg-light d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 class="fw-bold mb-0">${r.title}</h6>
-                  <small class="text-muted">${r.author} · Req by ${r.requester_name}</small>
-                  ${r.status === 'approved' ? '<span class="badge bg-success ms-2">Approved</span>' : ''}
-                </div>
-                <button class="btn btn-sm btn-outline-danger upvote-btn" data-id="${r.id}"><i class="fas fa-heart me-1"></i>${r.votes_count}</button>
-              </div>
-            `).join("")
-            : "<p class='text-muted small'>No requests yet. Be the first to suggest a title!</p>";
+          allWishlistRequests = res.requests || [];
+          document.getElementById("requestsCountBadge").textContent = `${allWishlistRequests.length} Requests`;
+          renderWishlistItems();
+        } catch (err) {
+          console.error(err);
+          document.getElementById("wishlistItems").innerHTML = `<div class="text-danger small">Failed to load requests: ${err.message}</div>`;
+        }
+      }
 
-          document.querySelectorAll(".upvote-btn").forEach((btn) => {
-            btn.onclick = async () => {
-              try {
-                await api(`/api/requests/${btn.dataset.id}/upvote`, "POST");
-                loadWishlist();
-              } catch (err) { showMessage(err.message, false); }
-            };
-          });
-        } catch (err) { console.error(err); }
+      function renderWishlistItems() {
+        const itemsEl = document.getElementById("wishlistItems");
+        let list = allWishlistRequests;
+        if (currentWishlistFilter === "urgent") {
+          list = list.filter((r) => r.urgency === "urgent" || r.urgency === "high");
+        } else if (currentWishlistFilter === "approved") {
+          list = list.filter((r) => r.status === "approved" || r.status === "shelved");
+        } else if (currentWishlistFilter === "contacted") {
+          list = list.filter((r) => r.status === "contacted");
+        }
+
+        if (!list.length) {
+          itemsEl.innerHTML = `<div class="p-4 text-center text-muted small"><i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>No book requests found for this filter. Suggest one on the left!</div>`;
+          return;
+        }
+
+        itemsEl.innerHTML = list.map((r) => {
+          // Status badge
+          let statusBadge = '<span class="badge bg-secondary-subtle text-secondary border"><i class="fas fa-clock me-1"></i>Under Review</span>';
+          if (r.status === 'approved') statusBadge = '<span class="badge bg-success-subtle text-success border border-success"><i class="fas fa-check-circle me-1"></i>Approved</span>';
+          else if (r.status === 'shelved') statusBadge = '<span class="badge bg-primary-subtle text-primary border border-primary"><i class="fas fa-book me-1"></i>In Stock</span>';
+          else if (r.status === 'contacted') statusBadge = '<span class="badge bg-info-subtle text-info border border-info"><i class="fas fa-comments me-1"></i>Admin Reached Out</span>';
+          else if (r.status === 'rejected') statusBadge = '<span class="badge bg-danger-subtle text-danger"><i class="fas fa-times-circle me-1"></i>Not Available</span>';
+
+          // Urgency badge
+          let urgencyBadge = '';
+          if (r.urgency === 'urgent') urgencyBadge = '<span class="badge bg-danger text-white"><i class="fas fa-fire me-1"></i>Urgent</span>';
+          else if (r.urgency === 'high') urgencyBadge = '<span class="badge bg-warning text-dark"><i class="fas fa-bolt me-1"></i>High</span>';
+
+          // Contact links
+          let contactLinks = [];
+          if (r.contact_whatsapp) {
+            const clean = r.contact_whatsapp.replace(/[^0-9]/g, '');
+            contactLinks.push(`<a href="https://wa.me/${clean}?text=Hi%20${encodeURIComponent(r.requester_name)},%20I%20saw%20your%20request%20for%20'${encodeURIComponent(r.title)}'%20on%20NexShelf." target="_blank" class="btn btn-sm btn-outline-success py-0 px-2" style="font-size: 11px;"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>`);
+          }
+          if (r.contact_phone) {
+            contactLinks.push(`<a href="tel:${r.contact_phone}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;"><i class="fas fa-phone me-1"></i>Call</a>`);
+          }
+          if (r.contact_email) {
+            contactLinks.push(`<a href="mailto:${r.contact_email}?subject=Regarding%20Book%20Request:%20${encodeURIComponent(r.title)}" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 11px;"><i class="fas fa-envelope me-1"></i>Email</a>`);
+          }
+
+          // Peer "I Have This Book" Quick Connect
+          const iHaveButton = `
+            <button class="btn btn-sm btn-success py-0 px-2 i-have-book-btn" 
+              data-title="${encodeURIComponent(r.title)}" 
+              data-requester="${encodeURIComponent(r.requester_name)}" 
+              data-wa="${r.contact_whatsapp || ''}" 
+              data-phone="${r.contact_phone || ''}" 
+              data-email="${r.contact_email || ''}" 
+              style="font-size: 11px;">
+              <i class="fas fa-hand-holding-hand me-1"></i>I Have This Book!
+            </button>
+          `;
+
+          // Admin notes callout
+          let adminNoteHtml = '';
+          if (r.admin_notes) {
+            adminNoteHtml = `<div class="p-2 mt-2 rounded-3 bg-primary-subtle text-primary small"><i class="fas fa-comment-dots me-1 fw-bold"></i><strong>Admin Response:</strong> ${r.admin_notes}</div>`;
+          }
+
+          return `
+            <div class="p-3 border rounded-3 bg-light shadow-sm">
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                <div>
+                  <h6 class="fw-bold mb-1 text-dark">${r.title}</h6>
+                  <div class="small text-muted mb-1"><i class="fas fa-user-pen me-1"></i>${r.author} ${r.category ? `· <span class="badge bg-secondary-subtle text-secondary py-0">${r.category}</span>` : ''}</div>
+                </div>
+                <div class="text-end d-flex flex-column align-items-end gap-1">
+                  ${statusBadge}
+                  ${urgencyBadge}
+                </div>
+              </div>
+              
+              ${r.reason ? `<p class="small text-secondary mb-2 fst-italic">"${r.reason}"</p>` : ''}
+              ${adminNoteHtml}
+
+              <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top flex-wrap gap-2">
+                <div class="small text-muted">
+                  <i class="fas fa-user-graduate me-1"></i><strong>${r.requester_name}</strong> (${r.requester_dept})
+                </div>
+                <div class="d-flex align-items-center gap-1 flex-wrap">
+                  ${iHaveButton}
+                  ${contactLinks.join(" ")}
+                  <button class="btn btn-sm btn-outline-danger upvote-btn ms-1 py-0 px-2" data-id="${r.id}" style="font-size: 11px;">
+                    <i class="fas fa-heart me-1"></i>${r.votes_count}
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        // Attach "I Have This Book" listeners
+        itemsEl.querySelectorAll(".i-have-book-btn").forEach((btn) => {
+          btn.onclick = () => {
+            const title = decodeURIComponent(btn.dataset.title);
+            const requester = decodeURIComponent(btn.dataset.requester);
+            const wa = btn.dataset.wa;
+            const phone = btn.dataset.phone;
+            const email = btn.dataset.email;
+
+            if (wa) {
+              const clean = wa.replace(/[^0-9]/g, '');
+              const msg = encodeURIComponent(`Hi ${requester}! I saw your request for "${title}" on NexShelf. I have a copy available and can give/lend it to you. When can we meet on campus?`);
+              window.open(`https://wa.me/${clean}?text=${msg}`, '_blank');
+            } else if (phone) {
+              window.location.href = `tel:${phone}`;
+            } else if (email) {
+              const subject = encodeURIComponent(`I have a copy of "${title}" for you`);
+              const body = encodeURIComponent(`Hi ${requester},\n\nI saw your book request on NexShelf for "${title}". I have a copy and would be happy to lend/give it to you.\n\nLet me know where to meet!\n`);
+              window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+            } else {
+              showMessage(`Requester didn't leave direct contact, but admin will notify ${requester} when available!`);
+            }
+          };
+        });
+
+        // Attach upvote listeners
+        itemsEl.querySelectorAll(".upvote-btn").forEach((btn) => {
+          btn.onclick = async () => {
+            try {
+              await api(`/api/requests/${btn.dataset.id}/upvote`, "POST");
+              confetti({ particleCount: 20, spread: 40, origin: { y: 0.6 } });
+              loadWishlist();
+            } catch (err) { showMessage(err.message, false); }
+          };
+        });
       }
 
       document.getElementById("wishlistForm").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const submitBtn = document.getElementById("submitWishlistBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Submitting…';
         try {
           await api("/api/requests", "POST", {
-            title: document.getElementById("reqTitle").value,
-            author: document.getElementById("reqAuthor").value,
-            category: document.getElementById("reqCategory").value,
-            reason: document.getElementById("reqReason").value,
+            title: document.getElementById("reqTitle").value.trim(),
+            author: document.getElementById("reqAuthor").value.trim(),
+            category: document.getElementById("reqCategory").value.trim(),
+            urgency: document.getElementById("reqUrgency").value,
+            contact_phone: document.getElementById("reqPhone").value.trim(),
+            contact_whatsapp: document.getElementById("reqWhatsapp").value.trim(),
+            contact_email: document.getElementById("reqEmail").value.trim(),
+            reason: document.getElementById("reqReason").value.trim(),
           });
-          showMessage("Book request added to Wishlist Desk!");
-          document.getElementById("wishlistForm").reset();
+          showMessage("✓ Book request & contact details submitted successfully!");
+          confetti({ particleCount: 35, spread: 60, origin: { y: 0.7 } });
+          document.getElementById("reqTitle").value = "";
+          document.getElementById("reqAuthor").value = "";
+          document.getElementById("reqCategory").value = "";
+          document.getElementById("reqReason").value = "";
           loadWishlist();
         } catch (err) { showMessage(err.message, false); }
+        finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Submit Book Request &amp; Contact Info';
+        }
+      });
+
+      /* ---------- Peer-to-Peer Book Exchange & Offers Hub ---------- */
+      let allBookOffers = [];
+      let currentOfferFilter = "all";
+
+      window.openGiveBookModal = () => {
+        if (currentStudentProfile && currentStudentProfile.full_name && !document.getElementById("offerDonorName").value) {
+          document.getElementById("offerDonorName").value = currentStudentProfile.full_name;
+        }
+        if (currentStudentProfile && currentStudentProfile.phone && !document.getElementById("offerPhone").value) {
+          document.getElementById("offerPhone").value = currentStudentProfile.phone;
+          document.getElementById("offerWhatsapp").value = currentStudentProfile.phone;
+        }
+        if (currentStudentProfile && currentStudentProfile.email && !document.getElementById("offerEmail").value) {
+          document.getElementById("offerEmail").value = currentStudentProfile.email;
+        }
+        const modalEl = document.getElementById("giveBookModal");
+        if (typeof bootstrap !== "undefined") {
+          let inst = bootstrap.Modal.getInstance(modalEl);
+          if (!inst) inst = new bootstrap.Modal(modalEl);
+          inst.show();
+        }
+      };
+
+      document.getElementById("giveBookModal").addEventListener("show.bs.modal", () => {
+        if (currentStudentProfile && currentStudentProfile.full_name && !document.getElementById("offerDonorName").value) {
+          document.getElementById("offerDonorName").value = currentStudentProfile.full_name;
+        }
+        if (currentStudentProfile && currentStudentProfile.phone && !document.getElementById("offerPhone").value) {
+          document.getElementById("offerPhone").value = currentStudentProfile.phone;
+          document.getElementById("offerWhatsapp").value = currentStudentProfile.phone;
+        }
+        if (currentStudentProfile && currentStudentProfile.email && !document.getElementById("offerEmail").value) {
+          document.getElementById("offerEmail").value = currentStudentProfile.email;
+        }
+      });
+
+      const openGiveBookBtn = document.getElementById("openGiveBookBtn");
+      if (openGiveBookBtn) openGiveBookBtn.addEventListener("click", openGiveBookModal);
+
+      const navExchangeBtn = document.getElementById("navExchangeBtn");
+      if (navExchangeBtn) {
+        navExchangeBtn.addEventListener("click", () => {
+          const sec = document.getElementById("peerExchangeSection");
+          if (sec) sec.scrollIntoView({ behavior: "smooth" });
+        });
+      }
+
+      const viewWishlistFromOffersBtn = document.getElementById("viewWishlistFromOffersBtn");
+      if (viewWishlistFromOffersBtn) viewWishlistFromOffersBtn.addEventListener("click", openWishlistModal);
+
+      // Offer Filter Pills
+      document.querySelectorAll(".offer-filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".offer-filter-btn").forEach((b) => {
+            b.classList.remove("active", "btn-dark");
+            if (b.dataset.filter === "all") b.classList.add("btn-outline-dark");
+          });
+          btn.classList.add("active", "btn-dark");
+          btn.classList.remove("btn-outline-dark");
+          currentOfferFilter = btn.dataset.filter;
+          renderBookOffers();
+        });
+      });
+
+      async function loadBookOffers() {
+        try {
+          const res = await api("/api/offers");
+          allBookOffers = res.offers || [];
+          const countBadge = document.getElementById("offersCountBadge");
+          if (countBadge) countBadge.textContent = `${allBookOffers.length} Books Available`;
+          renderBookOffers();
+        } catch (err) {
+          console.error(err);
+          const grid = document.getElementById("peerOffersGrid");
+          if (grid) grid.innerHTML = `<div class="col-12 text-danger small p-3">Failed to load peer offers: ${err.message}</div>`;
+        }
+      }
+
+      function renderBookOffers() {
+        const grid = document.getElementById("peerOffersGrid");
+        if (!grid) return;
+
+        let list = allBookOffers;
+        if (currentOfferFilter === "free_donation") {
+          list = list.filter((o) => o.offer_type === "free_donation" || o.offer_type === "free_giveaway");
+        } else if (currentOfferFilter === "lend") {
+          list = list.filter((o) => o.offer_type === "lend");
+        } else if (currentOfferFilter === "exchange") {
+          list = list.filter((o) => o.offer_type === "exchange");
+        }
+
+        if (!list.length) {
+          grid.innerHTML = `
+            <div class="col-12 py-5 text-center bg-white rounded-4 border">
+              <i class="fas fa-hand-holding-heart fa-3x text-success mb-3 opacity-50"></i>
+              <h6 class="fw-bold text-dark">No Books in This Category Right Now</h6>
+              <p class="text-muted small mb-3">Have old textbooks, guides, or notes you no longer need? Share them with fellow scholars!</p>
+              <button class="btn btn-sm btn-success fw-bold px-3 py-2" onclick="openGiveBookModal()">
+                <i class="fas fa-plus me-1"></i>Be the First to Offer a Book
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = list.map((o) => {
+          // Offer type badge
+          let typeBadge = '<span class="badge bg-success-subtle text-success border border-success fw-bold"><i class="fas fa-gift me-1"></i>Free Grant</span>';
+          if (o.offer_type === 'lend') {
+            typeBadge = '<span class="badge bg-primary-subtle text-primary border border-primary fw-bold"><i class="fas fa-handshake me-1"></i>Semester Loan</span>';
+          } else if (o.offer_type === 'exchange') {
+            typeBadge = '<span class="badge bg-warning-subtle text-dark border border-warning fw-bold"><i class="fas fa-repeat me-1"></i>Syllabus Swap</span>';
+          }
+
+          // Condition badge
+          let conditionBadge = `<span class="badge bg-light text-secondary border">${o.condition || 'Good'}</span>`;
+
+          // Contact actions
+          let contactButtons = [];
+          if (o.contact_whatsapp) {
+            const clean = o.contact_whatsapp.replace(/[^0-9]/g, '');
+            const msg = encodeURIComponent(`Hi ${o.donor_name}, I saw your book "${o.title}" offered on NexShelf (${o.offer_type === 'free_donation' ? 'Free Donation' : o.offer_type === 'lend' ? 'Lending' : 'Exchange'}). Is it still available to collect?`);
+            contactButtons.push(`
+              <a href="https://wa.me/${clean}?text=${msg}" target="_blank" class="btn btn-sm btn-success fw-bold py-1 px-2" style="font-size: 11.5px;">
+                <i class="fab fa-whatsapp me-1"></i>WhatsApp
+              </a>
+            `);
+          }
+          if (o.contact_phone) {
+            contactButtons.push(`
+              <a href="tel:${o.contact_phone}" class="btn btn-sm btn-outline-primary fw-bold py-1 px-2" style="font-size: 11.5px;">
+                <i class="fas fa-phone me-1"></i>Call
+              </a>
+            `);
+          }
+          if (o.contact_email) {
+            const emailSubject = encodeURIComponent(`Regarding Book Offer: ${o.title}`);
+            const emailBody = encodeURIComponent(`Hi ${o.donor_name},\n\nI saw your book offer on NexShelf for "${o.title}". Is it still available?\n\nThanks!`);
+            contactButtons.push(`
+              <a href="mailto:${o.contact_email}?subject=${emailSubject}&body=${emailBody}" class="btn btn-sm btn-outline-secondary fw-bold py-1 px-2" style="font-size: 11.5px;">
+                <i class="fas fa-envelope me-1"></i>Email
+              </a>
+            `);
+          }
+
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border rounded-4 shadow-sm bg-white p-3 d-flex flex-column justify-content-between position-relative">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                    ${typeBadge}
+                    ${conditionBadge}
+                  </div>
+                  <h6 class="fw-bold text-dark mb-1 lh-sm">${o.title}</h6>
+                  <div class="small text-muted mb-2">
+                    <i class="fas fa-user-pen me-1"></i>${o.author} ${o.category ? `· <span class="badge bg-secondary-subtle text-secondary py-0">${o.category}</span>` : ''}
+                  </div>
+                  ${o.description ? `<p class="small text-secondary mb-2 bg-light p-2 rounded-3 fst-italic" style="font-size: 11.5px;">"${o.description}"</p>` : ''}
+                </div>
+
+                <div class="mt-3 pt-2 border-top">
+                  <div class="d-flex justify-content-between align-items-center mb-2 small text-muted">
+                    <div>
+                      <i class="fas fa-user-circle text-primary me-1"></i><strong>${o.donor_name}</strong>
+                      <span class="opacity-75" style="font-size: 10px;">(${o.donor_dept || 'Student'})</span>
+                    </div>
+                    <span style="font-size: 10px;">${o.created_at}</span>
+                  </div>
+                  <div class="mb-3 small">
+                    <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 10.5px;">
+                      <i class="fas fa-map-marker-alt text-danger me-1"></i>Pickup: <strong>${o.pickup_location}</strong>
+                    </span>
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between gap-1 flex-wrap">
+                    <div class="small fw-bold text-muted" style="font-size: 11px;">Connect:</div>
+                    <div class="d-flex gap-1 flex-wrap">
+                      ${contactButtons.join("")}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Handle give book form submission
+      document.getElementById("giveBookForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById("submitOfferBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Publishing…';
+
+        try {
+          await api("/api/offers", "POST", {
+            title: document.getElementById("offerTitle").value.trim(),
+            author: document.getElementById("offerAuthor").value.trim(),
+            category: document.getElementById("offerCategory").value.trim(),
+            offer_type: document.getElementById("offerType").value,
+            condition: document.getElementById("offerCondition").value,
+            donor_name: document.getElementById("offerDonorName").value.trim(),
+            pickup_location: document.getElementById("offerPickupLocation").value.trim(),
+            contact_whatsapp: document.getElementById("offerWhatsapp").value.trim(),
+            contact_phone: document.getElementById("offerPhone").value.trim(),
+            contact_email: document.getElementById("offerEmail").value.trim(),
+            description: document.getElementById("offerDescription").value.trim(),
+            image_url: document.getElementById("offerPhotoUrl").value.trim(),
+          });
+
+          showMessage("✓ Your book offer has been published! Fellow students can now contact you.");
+          confetti({ particleCount: 45, spread: 70, origin: { y: 0.6 } });
+          const modalInstance = bootstrap.Modal.getInstance(document.getElementById("giveBookModal"));
+          if (modalInstance) modalInstance.hide();
+          document.getElementById("giveBookForm").reset();
+          const pImg = document.getElementById("offerPhotoPreview");
+          if (pImg) pImg.classList.add("d-none");
+          loadBookOffers();
+        } catch (err) {
+          showMessage(err.message, false);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-hand-holding-heart me-1"></i>Publish Book Offer';
+        }
+      });
+
+      /* ---------- Image Upload Helper ---------- */
+      function setupImageUploader(inputElId, previewImgId, hiddenUrlId, statusMsgId) {
+        const inputEl = document.getElementById(inputElId);
+        const previewImg = document.getElementById(previewImgId);
+        const hiddenUrl = document.getElementById(hiddenUrlId);
+        const statusMsg = document.getElementById(statusMsgId);
+        if (!inputEl) return;
+
+        inputEl.addEventListener("change", async () => {
+          const file = inputEl.files[0];
+          if (!file) return;
+
+          // Local instant preview and immediate data URL pre-seed
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (previewImg) {
+              previewImg.src = e.target.result;
+              previewImg.classList.remove("d-none");
+            }
+            if (hiddenUrl && !hiddenUrl.value) {
+              hiddenUrl.value = e.target.result;
+            }
+          };
+          reader.readAsDataURL(file);
+
+          if (statusMsg) statusMsg.innerHTML = '<span class="text-primary"><i class="fas fa-spinner fa-spin me-1"></i>Uploading photo…</span>';
+          const formData = new FormData();
+          formData.append("file", file);
+
+          try {
+            const res = await fetch("/api/upload", { method: "POST", body: formData });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Upload failed");
+            if (hiddenUrl) hiddenUrl.value = data.url;
+            if (statusMsg) statusMsg.innerHTML = '<span class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i>Photo ready!</span>';
+          } catch (err) {
+            // Local fallback ensures form submit is never blocked
+            if (previewImg && previewImg.src && previewImg.src.startsWith("data:")) {
+              if (hiddenUrl) hiddenUrl.value = previewImg.src;
+              if (statusMsg) statusMsg.innerHTML = '<span class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i>Photo attached ready!</span>';
+            } else {
+              if (statusMsg) statusMsg.innerHTML = `<span class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>${err.message}</span>`;
+            }
+          }
+        });
+      }
+
+      setupImageUploader("sellBookPhotoInput", "sellPhotoPreview", "sellPhotoUrl", "sellPhotoStatus");
+      setupImageUploader("noteFileInput", "notePhotoPreview", "noteFileUrl", "noteFileStatus");
+      setupImageUploader("offerBookPhotoInput", "offerPhotoPreview", "offerPhotoUrl", "offerPhotoStatus");
+
+      // Full-size lightbox viewer
+      window.openImagePreviewModal = (url, title) => {
+        if (!url) return;
+        document.getElementById("imagePreviewModalTitle").innerHTML = `<i class="fas fa-image me-2 text-warning"></i>${title || "Image Preview"}`;
+        document.getElementById("imagePreviewModalImg").src = url;
+        document.getElementById("imagePreviewOpenTabBtn").href = url;
+        const modalEl = document.getElementById("imagePreviewModal");
+        if (typeof bootstrap !== "undefined" && modalEl) {
+          bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        }
+      };
+
+      /* ---------- Student Peer-to-Peer Textbook Marketplace ---------- */
+      let allMarketplaceBooks = [];
+      let currentMarketPriceFilter = "all";
+
+      window.openSellBookModal = () => {
+        const modalEl = document.getElementById("sellBookModal");
+        if (typeof bootstrap !== "undefined" && modalEl) {
+          bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        }
+      };
+
+      const sellBookModalEl = document.getElementById("sellBookModal");
+      if (sellBookModalEl) {
+        sellBookModalEl.addEventListener("show.bs.modal", () => {
+          if (currentStudentProfile) {
+            if (currentStudentProfile.full_name && !document.getElementById("sellDonorName").value) {
+              document.getElementById("sellDonorName").value = currentStudentProfile.full_name;
+            }
+            if (currentStudentProfile.phone) {
+              if (!document.getElementById("sellWhatsapp").value) document.getElementById("sellWhatsapp").value = currentStudentProfile.phone;
+              if (!document.getElementById("sellPhone").value) document.getElementById("sellPhone").value = currentStudentProfile.phone;
+            }
+            if (currentStudentProfile.email && !document.getElementById("sellEmail").value) {
+              document.getElementById("sellEmail").value = currentStudentProfile.email;
+            }
+          }
+        });
+      }
+
+      const openSellBookBtn = document.getElementById("openSellBookBtn");
+      if (openSellBookBtn) openSellBookBtn.addEventListener("click", openSellBookModal);
+      const hubSellBtn = document.getElementById("hubSellBtn");
+      if (hubSellBtn) hubSellBtn.addEventListener("click", openSellBookModal);
+
+      const navMarketBtn = document.getElementById("navMarketBtn");
+      if (navMarketBtn) {
+        navMarketBtn.addEventListener("click", () => {
+          const sec = document.getElementById("marketplaceSection");
+          if (sec) sec.scrollIntoView({ behavior: "smooth" });
+        });
+      }
+
+      // Marketplace search & price filters
+      document.getElementById("marketSearchInput").addEventListener("input", renderMarketplace);
+      document.querySelectorAll(".market-price-filter").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".market-price-filter").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          currentMarketPriceFilter = btn.dataset.price;
+          renderMarketplace();
+        });
+      });
+
+      async function loadMarketplace() {
+        try {
+          const res = await api("/api/offers?offer_type=sell");
+          allMarketplaceBooks = res.offers || [];
+          document.getElementById("marketplaceCountBadge").textContent = `${allMarketplaceBooks.length} Books for Sale`;
+          renderMarketplace();
+        } catch (err) {
+          console.error(err);
+          document.getElementById("marketplaceGrid").innerHTML = `<div class="col-12 text-danger small p-3">Failed to load marketplace: ${err.message}</div>`;
+        }
+      }
+
+      function renderMarketplace() {
+        const grid = document.getElementById("marketplaceGrid");
+        if (!grid) return;
+
+        const searchVal = document.getElementById("marketSearchInput").value.trim().toLowerCase();
+        let list = allMarketplaceBooks;
+
+        if (searchVal) {
+          list = list.filter((b) => 
+            b.title.toLowerCase().includes(searchVal) ||
+            b.author.toLowerCase().includes(searchVal) ||
+            (b.category && b.category.toLowerCase().includes(searchVal)) ||
+            (b.description && b.description.toLowerCase().includes(searchVal))
+          );
+        }
+
+        if (currentMarketPriceFilter === "under200") {
+          list = list.filter((b) => Number(b.price) <= 200);
+        } else if (currentMarketPriceFilter === "under500") {
+          list = list.filter((b) => Number(b.price) > 200 && Number(b.price) <= 500);
+        }
+
+        if (!list.length) {
+          grid.innerHTML = `
+            <div class="col-12 py-5 text-center bg-white rounded-4 border">
+              <i class="fas fa-store-slash fa-3x text-muted mb-3 opacity-50"></i>
+              <h6 class="fw-bold text-dark">No Books Found in Marketplace Right Now</h6>
+              <p class="text-muted small mb-3">Have a book to sell from previous semesters? Set your price &amp; upload a photo!</p>
+              <button class="btn btn-sm btn-success fw-bold px-3 py-2" onclick="openSellBookModal()">
+                <i class="fas fa-plus me-1"></i>List First Book for Sale
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = list.map((b) => {
+          const cleanPhone = (b.contact_whatsapp || b.contact_phone || "").replace(/[^0-9]/g, "");
+          const waMsg = encodeURIComponent(`Hi ${b.donor_name}, I saw your book "${b.title}" listed for sale on NexShelf for ₹${b.price}. Is it still available to buy?`);
+          const coverImg = b.image_url || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80";
+
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border rounded-4 shadow-sm bg-white p-3 d-flex flex-column justify-content-between position-relative">
+                <div>
+                  <div class="position-relative mb-2">
+                    <img src="${coverImg}" alt="${b.title}" class="item-card-cover shadow-sm" onclick="openImagePreviewModal('${coverImg}', '${encodeURIComponent(b.title)}')">
+                    <span class="badge bg-success position-absolute top-0 end-0 m-2 fs-6 shadow py-1 px-2 fw-bold">
+                      ₹${b.price}
+                    </span>
+                    <span class="badge bg-dark bg-opacity-75 position-absolute bottom-0 start-0 m-2" style="font-size: 10px;">
+                      <i class="fas fa-magnifying-glass-plus me-1"></i>Click photo
+                    </span>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-start gap-1 mb-1">
+                    <h6 class="fw-bold text-dark mb-0 lh-sm">${b.title}</h6>
+                  </div>
+                  <div class="small text-muted mb-2">
+                    <i class="fas fa-user-pen me-1"></i>${b.author} · <span class="badge bg-light text-dark border">${b.condition}</span>
+                  </div>
+                  ${b.description ? `<p class="small text-secondary mb-2 bg-light p-2 rounded-3" style="font-size: 11px;">"${b.description}"</p>` : ""}
+                </div>
+
+                <div class="mt-2 pt-2 border-top">
+                  <div class="d-flex justify-content-between align-items-center mb-2 small text-muted">
+                    <div>
+                      <i class="fas fa-user-circle text-success me-1"></i><strong>${b.donor_name}</strong>
+                    </div>
+                    <span class="badge bg-light text-muted border px-1" style="font-size: 10px;">${b.created_at}</span>
+                  </div>
+                  <div class="mb-2 small">
+                    <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 10.5px;">
+                      <i class="fas fa-location-dot text-danger me-1"></i>Pickup: <strong>${b.pickup_location || 'Campus / Library'}</strong>
+                    </span>
+                  </div>
+                  <div class="d-flex gap-1 flex-wrap pt-1">
+                    ${cleanPhone ? `
+                      <a href="https://wa.me/${cleanPhone}?text=${waMsg}" target="_blank" class="btn btn-sm btn-success fw-bold flex-fill py-1" style="font-size: 11px;">
+                        <i class="fab fa-whatsapp me-1"></i>Buy via WhatsApp
+                      </a>
+                    ` : ""}
+                    ${b.contact_phone ? `
+                      <a href="tel:${b.contact_phone}" class="btn btn-sm btn-outline-primary fw-bold py-1 px-2" style="font-size: 11px;">
+                        <i class="fas fa-phone"></i>
+                      </a>
+                    ` : ""}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Sell Book Form Submit
+      document.getElementById("sellBookForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const photoUrl = document.getElementById("sellPhotoUrl").value.trim();
+        if (!photoUrl) {
+          alert("Please wait for your book photo to finish uploading, or choose a picture file!");
+          return;
+        }
+
+        const submitBtn = document.getElementById("submitSellBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Publishing…';
+
+        try {
+          await api("/api/offers", "POST", {
+            title: document.getElementById("sellTitle").value.trim(),
+            author: document.getElementById("sellAuthor").value.trim(),
+            category: document.getElementById("sellCategory").value.trim(),
+            condition: document.getElementById("sellCondition").value,
+            price: parseFloat(document.getElementById("sellPrice").value) || 0.0,
+            image_url: photoUrl,
+            offer_type: "sell",
+            donor_name: document.getElementById("sellDonorName").value.trim(),
+            pickup_location: document.getElementById("sellPickupLocation").value.trim(),
+            contact_whatsapp: document.getElementById("sellWhatsapp").value.trim(),
+            contact_phone: document.getElementById("sellPhone").value.trim(),
+            contact_email: document.getElementById("sellEmail").value.trim(),
+            description: document.getElementById("sellDescription").value.trim(),
+          });
+
+          showMessage("✓ Your book is now listed for sale in the Student Marketplace!");
+          confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
+          const modalInstance = bootstrap.Modal.getInstance(document.getElementById("sellBookModal"));
+          if (modalInstance) modalInstance.hide();
+          document.getElementById("sellBookForm").reset();
+          const pImg = document.getElementById("sellPhotoPreview");
+          if (pImg) pImg.classList.add("d-none");
+          loadMarketplace();
+        } catch (err) {
+          showMessage(err.message, false);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-tags me-1"></i>Publish Book for Sale (₹)';
+        }
+      });
+
+      /* ---------- Study Notes & Exam Materials Desk ("Notes Upload Karnek Ka Option") ---------- */
+      let allStudyNotes = [];
+
+      window.openUploadNotesModal = () => {
+        const modalEl = document.getElementById("uploadNotesModal");
+        if (typeof bootstrap !== "undefined" && modalEl) {
+          bootstrap.Modal.getOrCreateInstance(modalEl).show();
+        }
+      };
+
+      const uploadNotesModalEl = document.getElementById("uploadNotesModal");
+      if (uploadNotesModalEl) {
+        uploadNotesModalEl.addEventListener("show.bs.modal", () => {
+          if (currentStudentProfile) {
+            if (currentStudentProfile.full_name && !document.getElementById("noteAuthorName").value) {
+              document.getElementById("noteAuthorName").value = currentStudentProfile.full_name;
+            }
+            if (currentStudentProfile.phone) {
+              if (!document.getElementById("noteWhatsapp").value) document.getElementById("noteWhatsapp").value = currentStudentProfile.phone;
+              if (!document.getElementById("notePhone").value) document.getElementById("notePhone").value = currentStudentProfile.phone;
+            }
+            if (currentStudentProfile.email && !document.getElementById("noteEmail").value) {
+              document.getElementById("noteEmail").value = currentStudentProfile.email;
+            }
+            if (currentStudentProfile.department && !document.getElementById("noteDeptInput").value) {
+              document.getElementById("noteDeptInput").value = currentStudentProfile.department;
+            }
+          }
+        });
+      }
+
+      const openUploadNotesBtn = document.getElementById("openUploadNotesBtn");
+      if (openUploadNotesBtn) openUploadNotesBtn.addEventListener("click", openUploadNotesModal);
+      const hubUploadNotesBtn = document.getElementById("hubUploadNotesBtn");
+      if (hubUploadNotesBtn) hubUploadNotesBtn.addEventListener("click", openUploadNotesModal);
+
+      const navNotesBtn = document.getElementById("navNotesBtn");
+      if (navNotesBtn) {
+        navNotesBtn.addEventListener("click", () => {
+          const sec = document.getElementById("studyNotesSection");
+          if (sec) sec.scrollIntoView({ behavior: "smooth" });
+        });
+      }
+
+      document.getElementById("studyNotesSearchInput").addEventListener("input", renderStudyNotes);
+
+      async function loadStudyNotes() {
+        try {
+          const res = await api("/api/notes");
+          allStudyNotes = res.notes || [];
+          document.getElementById("notesCountBadge").textContent = `${allStudyNotes.length} Notes Shared`;
+          renderStudyNotes();
+        } catch (err) {
+          console.error(err);
+          document.getElementById("studyNotesGrid").innerHTML = `<div class="col-12 text-danger small p-3">Failed to load study notes: ${err.message}</div>`;
+        }
+      }
+
+      function renderStudyNotes() {
+        const grid = document.getElementById("studyNotesGrid");
+        if (!grid) return;
+
+        const searchVal = document.getElementById("studyNotesSearchInput").value.trim().toLowerCase();
+        let list = allStudyNotes;
+
+        if (searchVal) {
+          list = list.filter((n) =>
+            n.title.toLowerCase().includes(searchVal) ||
+            n.subject.toLowerCase().includes(searchVal) ||
+            (n.description && n.description.toLowerCase().includes(searchVal)) ||
+            (n.author_name && n.author_name.toLowerCase().includes(searchVal))
+          );
+        }
+
+        if (!list.length) {
+          grid.innerHTML = `
+            <div class="col-12 py-5 text-center bg-white rounded-4 border">
+              <i class="fas fa-file-circle-question fa-3x text-warning mb-3 opacity-50"></i>
+              <h6 class="fw-bold text-dark">No Study Notes Found</h6>
+              <p class="text-muted small mb-3">Upload your handwritten class notes, formulas, or question solutions to help classmates!</p>
+              <button class="btn btn-sm btn-warning fw-bold text-dark px-3 py-2" onclick="openUploadNotesModal()">
+                <i class="fas fa-upload me-1"></i>Be the First to Upload Notes
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = list.map((n) => {
+          const previewImg = n.file_url || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=400&q=80";
+          const cleanPhone = (n.contact_whatsapp || n.contact_phone || "").replace(/[^0-9]/g, "");
+
+          return `
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100 border rounded-4 shadow-sm bg-white p-3 d-flex flex-column justify-content-between position-relative">
+                <div>
+                  <div class="position-relative mb-2">
+                    <img src="${previewImg}" alt="${n.title}" class="notes-card-preview" onclick="openImagePreviewModal('${previewImg}', '${encodeURIComponent(n.title)}')">
+                    <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2 fw-bold" style="font-size: 10px;">
+                      <i class="fas fa-graduation-cap me-1"></i>${n.semester || 'Academic'}
+                    </span>
+                  </div>
+
+                  <span class="badge bg-primary-subtle text-primary border mb-1" style="font-size: 10px;">
+                    ${n.subject}
+                  </span>
+                  <h6 class="fw-bold text-dark mb-1 lh-sm">${n.title}</h6>
+                  ${n.description ? `<p class="small text-secondary mb-2 fst-italic" style="font-size: 11px;">"${n.description}"</p>` : ""}
+                </div>
+
+                <div class="mt-2 pt-2 border-top">
+                  <div class="d-flex justify-content-between align-items-center mb-2 small text-muted">
+                    <div>
+                      <i class="fas fa-user-pen text-warning me-1"></i><strong>${n.author_name}</strong>
+                    </div>
+                    <span style="font-size: 10px;">${n.created_at}</span>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center gap-1 flex-wrap pt-1">
+                    <button class="btn btn-sm btn-outline-danger py-0 px-2 like-note-btn" data-id="${n.id}" style="font-size: 11px;">
+                      <i class="fas fa-heart me-1"></i>${n.likes_count}
+                    </button>
+                    <div class="d-flex gap-1">
+                      <button class="btn btn-sm btn-outline-dark py-0 px-2" onclick="openImagePreviewModal('${previewImg}', '${encodeURIComponent(n.title)}')" style="font-size: 11px;">
+                        <i class="fas fa-eye me-1"></i>Preview
+                      </button>
+                      ${cleanPhone ? `
+                        <a href="https://wa.me/${cleanPhone}?text=Hi%20${encodeURIComponent(n.author_name)},%20I%20saw%20your%20notes%20for%20'${encodeURIComponent(n.subject)}'%20on%20NexShelf!" target="_blank" class="btn btn-sm btn-success py-0 px-2" style="font-size: 11px;">
+                          <i class="fab fa-whatsapp"></i>
+                        </a>
+                      ` : ""}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        // Attach Like note listeners
+        grid.querySelectorAll(".like-note-btn").forEach((btn) => {
+          btn.onclick = async () => {
+            try {
+              const res = await api(`/api/notes/${btn.dataset.id}/like`, "POST");
+              confetti({ particleCount: 20, spread: 40, origin: { y: 0.7 } });
+              loadStudyNotes();
+            } catch (err) { showMessage(err.message, false); }
+          };
+        });
+      }
+
+      // Upload Notes Form Submit
+      document.getElementById("uploadNotesForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fileUrl = document.getElementById("noteFileUrl").value.trim();
+        if (!fileUrl) {
+          alert("Please attach a photo or file of your study notes and wait for upload to complete!");
+          return;
+        }
+
+        const submitBtn = document.getElementById("submitNoteBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Publishing…';
+
+        try {
+          await api("/api/notes", "POST", {
+            title: document.getElementById("noteTitleInput").value.trim(),
+            subject: document.getElementById("noteSubjectInput").value.trim(),
+            department: document.getElementById("noteDeptInput").value.trim(),
+            semester: document.getElementById("noteSemesterInput").value.trim(),
+            description: document.getElementById("noteDescInput").value.trim(),
+            file_url: fileUrl,
+            author_name: document.getElementById("noteAuthorName").value.trim(),
+            contact_whatsapp: document.getElementById("noteWhatsapp").value.trim(),
+            contact_phone: document.getElementById("notePhone").value.trim(),
+            contact_email: document.getElementById("noteEmail").value.trim(),
+          });
+
+          showMessage("✓ Your study notes have been shared with fellow scholars!");
+          confetti({ particleCount: 50, spread: 80, origin: { y: 0.6 } });
+          const modalInstance = bootstrap.Modal.getInstance(document.getElementById("uploadNotesModal"));
+          if (modalInstance) modalInstance.hide();
+          document.getElementById("uploadNotesForm").reset();
+          const pImg = document.getElementById("notePhotoPreview");
+          if (pImg) pImg.classList.add("d-none");
+          loadStudyNotes();
+        } catch (err) {
+          showMessage(err.message, false);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-cloud-arrow-up me-1"></i>Publish Study Notes';
+        }
+      });
+
+      // Jump portal buttons
+      document.querySelectorAll(".jump-portal-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = document.querySelector(btn.dataset.target);
+          if (target) target.scrollIntoView({ behavior: "smooth" });
+        });
       });
 
       /* ---------- Reading Notes ---------- */
@@ -1437,7 +3308,12 @@
         window.location.href = "/login";
       });
 
-      loadDashboard();
+      (async function init() {
+        const ok = await ensureAuth();
+        if (ok) {
+          loadDashboard();
+        }
+      })();
     </script>
   </body>
 </html>

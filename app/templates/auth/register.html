@@ -39,7 +39,17 @@
         height: 500px;
         background: radial-gradient(circle, rgba(79, 70, 229, 0.25) 0%, transparent 70%);
         top: -150px;
-        right: -150px;
+        left: -150px;
+        border-radius: 50%;
+      }
+      body::after {
+        content: "";
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+        bottom: -100px;
+        right: -100px;
         border-radius: 50%;
       }
 
@@ -61,7 +71,7 @@
 
       .card-header {
         background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-        padding: 34px 24px;
+        padding: 32px 24px;
         text-align: center;
         color: white;
       }
@@ -73,13 +83,13 @@
         margin-bottom: 6px;
       }
 
-      .card-body { padding: 34px; }
+      .card-body { padding: 32px; }
 
       .form-label {
         font-weight: 700;
         color: #334155;
         margin-bottom: 6px;
-        font-size: 11.5px;
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
@@ -88,7 +98,7 @@
         border: 1.5px solid #cbd5e1;
         border-radius: 10px;
         padding: 11px 14px;
-        font-size: 13.5px;
+        font-size: 14px;
         transition: all 0.25s ease;
       }
 
@@ -111,7 +121,6 @@
         box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35);
         text-transform: uppercase;
         letter-spacing: 0.8px;
-        margin-top: 10px;
       }
       .btn-register:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(79, 70, 229, 0.45); }
     </style>
@@ -148,8 +157,9 @@
             </div>
           </form>
 
-          <div class="text-center mt-4 pt-3 border-top">
-            <small class="text-muted">Already registered? <a href="/login" class="fw-bold text-primary text-decoration-none">Sign In</a></small>
+          <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top small">
+            <span class="text-muted">Already registered? <a href="/login" class="fw-bold text-primary text-decoration-none">Sign In</a></span>
+            <a href="/contact" class="text-secondary text-decoration-none fw-semibold"><i class="fas fa-headset me-1 text-primary"></i>Contact Desk</a>
           </div>
         </div>
       </div>

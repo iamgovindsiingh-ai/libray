@@ -27,3 +27,8 @@ def admin_dashboard():
 @ui_bp.route("/student")
 def student_dashboard():
     return render_template("student/dashboard.html")
+
+
+@ui_bp.route("/contact")
+def contact_page():
+    return render_template("public/contact.html")
