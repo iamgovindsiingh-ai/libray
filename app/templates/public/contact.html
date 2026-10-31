@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NexShelf · Contact the Library</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-light: #eef2ff;
+        --secondary: #06b6d4;
+        --accent: #f59e0b;
+        --dark: #0f172a;
+        --surface: #ffffff;
+        --bg: #f8fafc;
+        --border: #e2e8f0;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--text-main);
+        font-family: "Plus Jakarta Sans", sans-serif;
+        min-height: 100vh;
+      }
+
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #0f172a 100%);
+        color: white;
+        padding: 60px 0 80px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        width: 600px; height: 600px;
+        background: radial-gradient(circle, rgba(79,70,229,0.3) 0%, transparent 70%);
+        top: -200px; right: -150px;
+        border-radius: 50%;
+      }
+      .hero-section::after {
+        content: "";
+        position: absolute;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%);
+        bottom: -100px; left: -100px;
+        border-radius: 50%;
+      }
+      .hero-content { position: relative; z-index: 2; }
+      .hero-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .hero-sub { font-size: 16px; opacity: 0.85; max-width: 600px; line-height: 1.7; }
+
+      /* Info Cards Row */
+      .info-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 28px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+      }
+      .info-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+      .info-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px;
+        font-size: 22px;
+      }
+
+      /* Contact Form */
+      .contact-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 36px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      }
+      .contact-card .form-control, .contact-card .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 14px;
+        transition: 0.25s;
+      }
+      .contact-card .form-control:focus, .contact-card .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(79,70,229,0.12);
+      }
+      .submit-btn {
+        background: linear-gradient(135deg, #4f46e5, #3730a3);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        transition: 0.25s;
+        box-shadow: 0 8px 20px rgba(79,70,229,0.3);
+      }
+      .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(79,70,229,0.4); color: white; }
+
+      /* FAQ Section */
+      .faq-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 24px;
+        transition: 0.2s;
+      }
+      .faq-card:hover { border-color: var(--primary); }
+
+      /* Navbar for contact page */
+      .contact-nav {
+        background: rgba(30,27,75,0.97);
+        backdrop-filter: blur(12px);
+        padding: 14px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+      }
+      .nav-brand {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        color: white !important;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-link-btn {
+        background: rgba(255,255,255,0.12);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+      }
+      .nav-link-btn:hover { background: white; color: var(--primary); }
+
+      .footer {
+        background: #0f172a;
+        color: rgba(255,255,255,0.6);
+        padding: 30px 0;
+        text-align: center;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="contact-nav">
+      <div class="container d-flex align-items-center justify-content-between">
+        <a class="nav-brand" href="/">
+          <i class="fas fa-book-sparkles text-warning"></i>NexShelf
+        </a>
+        <div class="d-flex gap-2">
+          <a href="/login" class="nav-link-btn"><i class="fas fa-sign-in-alt me-1"></i>Student Login</a>
+          <a href="/register" class="nav-link-btn"><i class="fas fa-user-plus me-1"></i>Register</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="container hero-content">
+        <div class="badge bg-primary-subtle text-primary mb-3 px-3 py-2" style="font-size: 12px; font-weight: 700;">
+          <i class="fas fa-envelope me-1"></i>GET IN TOUCH
+        </div>
+        <h1 class="hero-title">Contact NexShelf Library</h1>
+        <p class="hero-sub">
+          Have a question about a book? Want to suggest a new title? Need help with your account?
+          Reach out to us — we're here to help students, faculty, and visitors alike.
+        </p>
+      </div>
+    </section>
+
+    <!-- Quick Info Cards -->
+    <div class="container" style="margin-top: -50px; position: relative; z-index: 10;">
+      <div class="row g-4 mb-5">
+        <div class="col-md-4">
+          <div class="info-card">
+            <div class="info-icon" style="background: #e0e7ff; color: #4338ca;">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h6 class="fw-bold mb-1">Library Hours</h6>
+            <p class="text-muted small mb-0">Mon – Sat: 8:00 AM – 9:00 PM<br>Sunday: 10:00 AM – 5:00 PM</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="info-card">
+            <div class="info-icon" style="background: #d1fae5; color: #047857;">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h6 class="fw-bold mb-1">Visit Us</h6>
+            <p class="text-muted small mb-0">Central Library Building<br>University Campus, Block A</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="info-card">
+            <div class="info-icon" style="background: #fef3c7; color: #b45309;">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h6 class="fw-bold mb-1">Quick Support</h6>
+            <p class="text-muted small mb-0">library@nexshelf.edu<br>+91 98765 43210</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form + FAQ -->
+    <div class="container mb-5">
+      <div class="row g-5">
+        <!-- Contact Form -->
+        <div class="col-lg-7">
+          <div class="contact-card">
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <div class="info-icon" style="background: linear-gradient(135deg, #4f46e5, #06b6d4); color: white; width: 48px; height: 48px; border-radius: 12px; font-size: 18px;">
+                <i class="fas fa-paper-plane"></i>
+              </div>
+              <div>
+                <h4 class="fw-bold mb-0">Send Us a Message</h4>
+                <p class="text-muted small mb-0">No login required — anyone can reach us</p>
+              </div>
+            </div>
+
+            <div id="contactAlert" class="alert d-none mb-3" role="alert"></div>
+
+            <form id="contactForm" class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Your Name *</label>
+                <input class="form-control" id="cName" placeholder="Full name" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Email Address *</label>
+                <input class="form-control" id="cEmail" type="email" placeholder="you@email.com" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Phone Number</label>
+                <input class="form-control" id="cPhone" placeholder="+91 XXXXX XXXXX" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Topic *</label>
+                <select class="form-select" id="cType">
+                  <option value="general">General Inquiry</option>
+                  <option value="book_inquiry">Book Inquiry / Availability</option>
+                  <option value="feedback">Feedback & Suggestions</option>
+                  <option value="complaint">Report an Issue</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Subject *</label>
+                <input class="form-control" id="cSubject" placeholder="Brief subject line" required />
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold text-uppercase" style="font-size: 11px;">Message *</label>
+                <textarea class="form-control" id="cMessage" rows="5" placeholder="Tell us how we can help you…" required></textarea>
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="submit-btn w-100">
+                  <i class="fas fa-paper-plane me-2"></i>Send Message
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- FAQ Sidebar -->
+        <div class="col-lg-5">
+          <h5 class="fw-bold mb-3"><i class="fas fa-circle-question text-primary me-2"></i>Frequently Asked Questions</h5>
+          <div class="d-grid gap-3">
+            <div class="faq-card">
+              <h6 class="fw-bold mb-2" style="font-size: 14px;"><i class="fas fa-book-open text-primary me-2"></i>How do I borrow a book?</h6>
+              <p class="text-muted small mb-0">Sign up for a student account, browse the catalog, and click "Borrow" on any available title. You can also visit the library desk.</p>
+            </div>
+            <div class="faq-card">
+              <h6 class="fw-bold mb-2" style="font-size: 14px;"><i class="fas fa-heart text-danger me-2"></i>Can I request a new book?</h6>
+              <p class="text-muted small mb-0">Yes! Log in to your student account and use the Wishlist Desk to submit a book request with your contact details. Admin will review it.</p>
+            </div>
+            <div class="faq-card">
+              <h6 class="fw-bold mb-2" style="font-size: 14px;"><i class="fas fa-coins text-warning me-2"></i>How are fines calculated?</h6>
+              <p class="text-muted small mb-0">A fine of ₹5/day is applied for every day a book is returned past its due date. You can view and pay fines through your dashboard.</p>
+            </div>
+            <div class="faq-card">
+              <h6 class="fw-bold mb-2" style="font-size: 14px;"><i class="fas fa-id-badge text-info me-2"></i>What is a Digital Pass?</h6>
+              <p class="text-muted small mb-0">Your Digital Pass is a QR-code based library card stored in your student dashboard. Show it at the desk for quick check-in/out.</p>
+            </div>
+            <div class="faq-card">
+              <h6 class="fw-bold mb-2" style="font-size: 14px;"><i class="fas fa-user-plus text-success me-2"></i>I'm not a student. Can I still use the library?</h6>
+              <p class="text-muted small mb-0">Visitors are welcome! Use this contact form to inquire about guest access, book availability, or visiting hours.</p>
+            </div>
+          </div>
+
+          <!-- Quick Action Box -->
+          <div class="mt-4 p-4 rounded-4" style="background: linear-gradient(135deg, #1e1b4b, #312e81); color: white;">
+            <h6 class="fw-bold mb-2"><i class="fas fa-bolt text-warning me-2"></i>Quick Links</h6>
+            <div class="d-grid gap-2">
+              <a href="/login" class="btn btn-sm btn-outline-light"><i class="fas fa-sign-in-alt me-1"></i>Student Login</a>
+              <a href="/register" class="btn btn-sm btn-outline-light"><i class="fas fa-user-plus me-1"></i>Create Account</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p class="mb-1"><i class="fas fa-book-sparkles text-warning me-1"></i><strong>NexShelf</strong> — Next-Gen Smart Library Management System</p>
+        <p class="mb-0 opacity-75">© 2026 NexShelf University Library. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      const contactForm = document.getElementById("contactForm");
+      const contactAlert = document.getElementById("contactAlert");
+
+      const showAlert = (text, ok = true) => {
+        contactAlert.className = `alert alert-${ok ? "success" : "danger"}`;
+        contactAlert.innerHTML = text;
+        contactAlert.classList.remove("d-none");
+        if (ok) setTimeout(() => contactAlert.classList.add("d-none"), 8000);
+      };
+
+      contactForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = contactForm.querySelector(".submit-btn");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending…';
+
+        try {
+          const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sender_name: document.getElementById("cName").value.trim(),
+              sender_email: document.getElementById("cEmail").value.trim(),
+              sender_phone: document.getElementById("cPhone").value.trim(),
+              subject: document.getElementById("cSubject").value.trim(),
+              message: document.getElementById("cMessage").value.trim(),
+              message_type: document.getElementById("cType").value,
+            }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "Failed to send message.");
+
+          showAlert('<i class="fas fa-check-circle me-2"></i>' + data.message);
+          contactForm.reset();
+        } catch (err) {
+          showAlert('<i class="fas fa-exclamation-circle me-2"></i>' + err.message, false);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send Message';
+        }
+      });
+    </script>
+  </body>
+</html>
+
