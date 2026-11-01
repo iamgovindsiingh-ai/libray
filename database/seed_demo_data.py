@@ -37,6 +37,13 @@ def seed_data():
             "role": "admin",
         }, allow_admin_role=True)
         print("  [+] Created Admin: admin1265@nexshelf.edu (pass: admin1265)")
+    else:
+        from werkzeug.security import generate_password_hash
+        admin.password_hash = generate_password_hash("admin1265")
+        admin.full_name = "GOVIND SINGH"
+        admin.role = "admin"
+        db.session.commit()
+        print("  [+] Synchronized Admin: admin1265@nexshelf.edu (pass: admin1265)")
 
     # 2. Student Users
     students = [
