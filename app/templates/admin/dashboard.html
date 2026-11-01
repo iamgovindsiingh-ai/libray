@@ -1146,6 +1146,7 @@
       };
 
       const sessionToken = localStorage.getItem("token");
+<<<<<<< HEAD
       const sessionRole = localStorage.getItem("userRole");
       if (!sessionToken || sessionRole !== "admin") {
         window.location.href = "/login";
@@ -1176,6 +1177,12 @@
         }
       })();
 
+=======
+      if (!sessionToken) {
+        window.location.href = "/login";
+      }
+
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
       const deskFetch = async (path, method = "GET", payload) => {
         const response = await fetch(path, {
           method,
@@ -1185,12 +1192,15 @@
           },
           body: payload ? JSON.stringify(payload) : undefined,
         });
+<<<<<<< HEAD
         if (response.status === 401 || response.status === 403) {
           localStorage.removeItem("token");
           localStorage.removeItem("userRole");
           window.location.href = "/login";
           throw new Error("Session expired or unauthorized.");
         }
+=======
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
         const body = await response.json();
         if (!response.ok) throw new Error(body.error || "Request failed.");
         return body;

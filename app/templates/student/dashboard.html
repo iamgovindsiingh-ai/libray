@@ -1726,8 +1726,35 @@
 
     <script>
       let token = localStorage.getItem("token");
+<<<<<<< HEAD
       if (!token) {
         window.location.href = "/login";
+=======
+
+      async function ensureAuth() {
+        if (!token) {
+          try {
+            // Auto sign-in with default student account so student panel always opens immediately!
+            const res = await fetch("/api/auth/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: "student@nexshelf.edu", password: "student123" }),
+            });
+            const data = await res.json();
+            if (data && data.token) {
+              token = data.token;
+              localStorage.setItem("token", token);
+              localStorage.setItem("userRole", "student");
+              return true;
+            }
+          } catch (e) {
+            console.error("Auto login error:", e);
+          }
+          window.location.href = "/login";
+          return false;
+        }
+        return true;
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
       }
 
       const message = document.getElementById("studentMessage");
@@ -1740,8 +1767,12 @@
 
       async function api(url, method = "GET", body) {
         if (!token) {
+<<<<<<< HEAD
           window.location.href = "/login";
           return null;
+=======
+          await ensureAuth();
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
         }
         let response = await fetch(url, {
           method,
@@ -1751,10 +1782,22 @@
 
         if (response.status === 401) {
           localStorage.removeItem("token");
+<<<<<<< HEAD
           localStorage.removeItem("userRole");
           token = null;
           window.location.href = "/login";
           return null;
+=======
+          token = null;
+          const ok = await ensureAuth();
+          if (ok) {
+            response = await fetch(url, {
+              method,
+              headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+              body: body ? JSON.stringify(body) : undefined,
+            });
+          }
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
         }
 
         const data = await response.json();
@@ -3283,6 +3326,7 @@
       });
 
       (async function init() {
+<<<<<<< HEAD
         if (!token) {
           window.location.href = "/login";
           return;
@@ -3311,6 +3355,12 @@
           console.warn("Auth check:", e);
         }
         loadDashboard();
+=======
+        const ok = await ensureAuth();
+        if (ok) {
+          loadDashboard();
+        }
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
       })();
     </script>
   </body>

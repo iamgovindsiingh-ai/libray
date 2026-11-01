@@ -25,7 +25,11 @@ def seed_data():
             "password": "admin123",
             "full_name": "Chief Librarian Elena Vance",
             "role": "admin",
+<<<<<<< HEAD
         }, allow_admin_role=True)
+=======
+        })
+>>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
         print("  [+] Created Admin: admin@nexshelf.edu (pass: admin123)")
 
     # 2. Student Users
