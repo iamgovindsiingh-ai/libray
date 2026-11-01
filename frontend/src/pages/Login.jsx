@@ -113,7 +113,7 @@ export function Login() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="govindsingh.cse@gmail.com / student@nexshelf.edu"
+                    placeholder="student@nexshelf.edu"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-700/80 bg-slate-950/60 focus:bg-slate-950 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 transition shadow-inner"
                   />
                 </div>
