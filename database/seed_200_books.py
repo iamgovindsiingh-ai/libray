@@ -4,6 +4,16 @@ Generates over 200 curated textbooks and reference books spanning 12 academic do
 distributed across Zone A (Turing), Zone B (Ramanujan), Zone C (Tesla), and Zone D (Hypatia).
 """
 
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+BACKEND_DIR = os.path.join(BASE_DIR, 'backend')
+if os.path.exists(BACKEND_DIR) and BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
 from app import create_app, db
 from app.models import Author, Book, Category
 

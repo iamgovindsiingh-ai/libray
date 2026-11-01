@@ -10,3 +10,6 @@ venv/
 .DS_Store
 scratch/
 .vscode/
+
+frontend/node_modules/
+frontend/dist/

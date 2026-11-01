@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: 
+      radial-gradient(circle at 12% 15%, rgba(99, 102, 241, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 88% 22%, rgba(14, 165, 233, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+      #f8fafc;
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.glass-nav {
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Glowing Pulsing Animations */
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.4)); }
+  50% { transform: scale(1.08) rotate(3deg); filter: drop-shadow(0 0 18px rgba(245, 158, 11, 0.8)); }
+}
+
+.animate-spark {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* 3D Virtual Spine Shelf */
+.spine-shelf {
+  perspective: 1000px;
+}
+
+.book-spine-item {
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-spine-item:hover {
+  transform: translateY(-16px) rotateX(-4deg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+

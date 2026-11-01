@@ -31,7 +31,18 @@ class MemberService:
         else:
             user = User.query.filter_by(email=email).first()
             if not user:
-                raise ValueError("A valid user account is required. Create the user first or provide user_id.")
+                from werkzeug.security import generate_password_hash
+                full_name = (data.get("full_name") or data.get("name") or "Student Scholar").strip()
+                password = data.get("password") or "student123"
+                user = User(
+                    email=email,
+                    password_hash=generate_password_hash(password),
+                    full_name=full_name,
+                    role="student",
+                    is_active=True,
+                )
+                db.session.add(user)
+                db.session.commit()
 
         if Member.query.filter_by(student_id=student_id).first():
             raise ValueError("A member with this student ID already exists.")
@@ -98,6 +109,10 @@ class MemberService:
         member = Member.query.get(member_id)
         if not member:
             raise ValueError("Member not found.")
+
+        active_issues = [i for i in getattr(member, 'issue_records', []) if getattr(i, 'status', '') == 'issued']
+        if active_issues:
+            raise ValueError(f"Cannot remove member #{member.student_id}. They still have {len(active_issues)} active book loans that must be returned first.")
 
         db.session.delete(member)
         db.session.commit()

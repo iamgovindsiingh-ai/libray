@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, Response, current_app, jsonify, request, send_from_directory
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from werkzeug.utils import secure_filename
 
@@ -14,7 +14,7 @@ from app.utils.decorators import admin_required, student_required
 
 community_bp = Blueprint("community_bp", __name__)
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif", "pdf"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp", "gif", "pdf", "doc", "docx", "txt", "ppt", "pptx"}
 
 
 def allowed_file(filename):
@@ -51,7 +51,7 @@ def upload_file():
             "filename": filename
         }), 201
 
-    return jsonify({"error": "File type not supported. Please upload a PNG, JPG, JPEG, WEBP, or PDF."}), 400
+    return jsonify({"error": "File type not supported. Please upload a PDF, DOCX, DOC, TXT, or image file."}), 400
 
 
 # --- Reviews ---
@@ -243,6 +243,48 @@ def create_study_note():
         }), 201
     except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
+
+
+@community_bp.route("/notes/<int:note_id>/download", methods=["GET"])
+def download_study_note(note_id):
+    from app.models import StudyNote
+    note = StudyNote.query.get(note_id)
+    if not note:
+        return jsonify({"error": "Study note not found."}), 404
+
+    upload_folder = os.path.join(current_app.root_path, "static", "uploads")
+    if note.file_url and "/static/uploads/" in note.file_url:
+        filename = note.file_url.split("/static/uploads/")[-1]
+        file_path = os.path.join(upload_folder, filename)
+        if os.path.exists(file_path):
+            ext = filename.rsplit(".", 1)[-1] if "." in filename else "pdf"
+            clean_name = secure_filename(f"{note.title}_{note.subject}") + f".{ext}"
+            return send_from_directory(upload_folder, filename, as_attachment=True, download_name=clean_name)
+
+    content = f"""====================================================
+NEXSHELF SCHOLAR REPOSITORY - STUDY NOTE
+====================================================
+Title:       {note.title}
+Subject:     {note.subject}
+Author:      {note.author_name or 'Peer Scholar'}
+Semester:    {note.semester or 'N/A'}
+Upvotes:     {note.likes_count}
+Uploaded:    {note.created_at.strftime('%Y-%m-%d') if note.created_at else 'Recent'}
+====================================================
+
+SYNOPSIS & STUDY CONTENTS:
+----------------------------------------------------
+{note.description or 'No additional synopsis provided.'}
+
+----------------------------------------------------
+NexShelf Academic Library & Student Resource System
+"""
+    clean_title = secure_filename(note.title) or "study_notes"
+    return Response(
+        content,
+        mimetype="text/plain",
+        headers={"Content-Disposition": f'attachment; filename="{clean_title}_notes.txt"'}
+    )
 
 
 @community_bp.route("/notes/<int:note_id>/like", methods=["POST"])

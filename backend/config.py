@@ -19,10 +19,17 @@ class Config:
             db_url = db_url.replace("postgres://", "postgresql://", 1)
         SQLALCHEMY_DATABASE_URI = db_url
     else:
-        # Default fallback to SQLite instance database
-        instance_path = os.path.join(basedir, "instance")
-        os.makedirs(instance_path, exist_ok=True)
-        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(instance_path, 'library_management.db')}"
+        # Default fallback to SQLite database inside database/ directory
+        root_dir = os.path.dirname(basedir) if os.path.basename(basedir) == "backend" else basedir
+        db_path = os.path.join(root_dir, "database", "library_management.db")
+        
+        if not os.path.exists(db_path):
+            legacy_instance = os.path.join(root_dir, "instance")
+            os.makedirs(legacy_instance, exist_ok=True)
+            db_path = os.path.join(legacy_instance, "library_management.db")
+
+        clean_db_path = os.path.abspath(db_path).replace("\\", "/")
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{clean_db_path}"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-key-nexshelf-2026")

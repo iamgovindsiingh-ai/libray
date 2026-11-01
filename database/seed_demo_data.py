@@ -4,6 +4,16 @@ Creates demo users, categorized books with shelf coordinates, initial wishlist r
 """
 
 from datetime import datetime, timedelta
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+BACKEND_DIR = os.path.join(BASE_DIR, 'backend')
+if os.path.exists(BACKEND_DIR) and BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
 from app import db
 from app.models import (
     Author, Book, Category, Member, User,
@@ -18,15 +28,15 @@ def seed_data():
     print("[*] Seeding NexShelf demo data...")
 
     # 1. Admin User
-    admin = User.query.filter_by(email="admin@nexshelf.edu").first()
+    admin = User.query.filter_by(email="admin1265@nexshelf.edu").first()
     if not admin:
         admin = AuthService.register_user({
-            "email": "admin@nexshelf.edu",
-            "password": "admin123",
-            "full_name": "Chief Librarian Elena Vance",
+            "email": "admin1265@nexshelf.edu",
+            "password": "admin1265",
+            "full_name": "GOVIND SINGH",
             "role": "admin",
         }, allow_admin_role=True)
-        print("  [+] Created Admin: admin@nexshelf.edu (pass: admin123)")
+        print("  [+] Created Admin: admin1265@nexshelf.edu (pass: admin1265)")
 
     # 2. Student Users
     students = [
@@ -93,13 +103,13 @@ def seed_data():
                 isbn=isbn,
                 category_id=cat_id,
                 author_id=auth.id,
-                publish_year=year,
-                total_copies=qty,
-                available_copies=qty,
+                publication_year=year,
+                quantity=qty,
+                available_quantity=qty,
                 shelf_location=shelf,
                 tags=tags,
                 accent_color=color,
-                cover_image_url=cover,
+                
                 summary=f"Standard academic edition of {title}. Comprehensive reference volume.",
             )
             db.session.add(b)

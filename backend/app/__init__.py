@@ -123,7 +123,10 @@ def create_app():
             try:
                 from app.models import User
                 if User.query.filter_by(email="admin@nexshelf.edu").first() is None:
-                    from seed_demo_data import seed_data
+                    try:
+                        from database.seed_demo_data import seed_data
+                    except ImportError:
+                        from seed_demo_data import seed_data
                     seed_data()
                     app.logger.info("Initial cloud database seeded successfully.")
             except Exception as seed_err:
