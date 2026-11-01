@@ -28,22 +28,22 @@ def seed_data():
     print("[*] Seeding NexShelf demo data...")
 
     # 1. Admin User
-    admin = User.query.filter_by(email="admin1265@nexshelf.edu").first()
+    admin = User.query.filter_by(email="govindsingh.cse@gmail.com").first()
     if not admin:
         admin = AuthService.register_user({
-            "email": "admin1265@nexshelf.edu",
-            "password": "admin1265",
-            "full_name": "GOVIND SINGH",
+            "email": "govindsingh.cse@gmail.com",
+            "password": "12651700",
+            "full_name": "Govind Singh",
             "role": "admin",
         }, allow_admin_role=True)
-        print("  [+] Created Admin: admin1265@nexshelf.edu (pass: admin1265)")
+        print("  [+] Created Admin: govindsingh.cse@gmail.com (pass: 12651700)")
     else:
         from werkzeug.security import generate_password_hash
-        admin.password_hash = generate_password_hash("admin1265")
-        admin.full_name = "GOVIND SINGH"
+        admin.password_hash = generate_password_hash("12651700")
+        admin.full_name = "Govind Singh"
         admin.role = "admin"
         db.session.commit()
-        print("  [+] Synchronized Admin: admin1265@nexshelf.edu (pass: admin1265)")
+        print("  [+] Synchronized Admin: govindsingh.cse@gmail.com (pass: 12651700)")
 
     # 2. Student Users
     students = [
