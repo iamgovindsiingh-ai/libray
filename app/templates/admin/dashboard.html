@@ -1146,7 +1146,6 @@
       };
 
       const sessionToken = localStorage.getItem("token");
-<<<<<<< HEAD
       const sessionRole = localStorage.getItem("userRole");
       if (!sessionToken || sessionRole !== "admin") {
         window.location.href = "/login";
@@ -1176,13 +1175,6 @@
           console.warn("Admin auth check:", e);
         }
       })();
-
-=======
-      if (!sessionToken) {
-        window.location.href = "/login";
-      }
-
->>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
       const deskFetch = async (path, method = "GET", payload) => {
         const response = await fetch(path, {
           method,
@@ -1192,15 +1184,12 @@
           },
           body: payload ? JSON.stringify(payload) : undefined,
         });
-<<<<<<< HEAD
         if (response.status === 401 || response.status === 403) {
           localStorage.removeItem("token");
           localStorage.removeItem("userRole");
           window.location.href = "/login";
           throw new Error("Session expired or unauthorized.");
         }
-=======
->>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
         const body = await response.json();
         if (!response.ok) throw new Error(body.error || "Request failed.");
         return body;
@@ -1613,22 +1602,22 @@
               if (item.status === "pending") {
                 actionButtons += `<button class="btn btn-sm btn-success py-0 px-2 approve-req-btn me-1" data-id="${item.id}" title="Quick Approve"><i class="fas fa-check"></i></button>`;
               }
-              actionButtons += `<button class="btn btn-sm strike-btn delete-req-btn" data-id="${item.id}" title="Permanently Delete Request"><i class="fas fa-trash-can"></i></button>`;
+              actionButtons += `<button class="btn btn-sm text-danger delete-req-btn" data-id="${item.id}" title="Permanently Delete Request"><i class="fas fa-trash-can"></i></button>`;
             }
             if (schema.saleActions) {
               actionButtons += `<button class="btn btn-sm btn-outline-success py-0 px-2 mark-sold-btn me-1" data-id="${item.id}" data-status="${item.status}"><i class="fas fa-tag me-1"></i>${item.status === 'sold' ? 'Make Avail' : 'Mark Sold'}</button>`;
-              actionButtons += `<button class="btn btn-sm strike-btn delete-offer-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
+              actionButtons += `<button class="btn btn-sm text-danger delete-offer-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
             }
             if (schema.noteActions) {
               actionButtons += `<button class="btn btn-sm btn-outline-info py-0 px-2 me-1" onclick="window.open('${item.file_url}', '_blank')"><i class="fas fa-eye me-1"></i>View</button>`;
-              actionButtons += `<button class="btn btn-sm strike-btn delete-note-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
+              actionButtons += `<button class="btn btn-sm text-danger delete-note-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
             }
             if (schema.offerActions) {
-              actionButtons += `<button class="btn btn-sm strike-btn delete-offer-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
+              actionButtons += `<button class="btn btn-sm text-danger delete-offer-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
             }
             if (schema.inquiryActions) {
               actionButtons += `<button class="btn btn-sm btn-ledger navy py-0 px-2 view-inquiry-btn me-1" data-msg="${encodeURIComponent(JSON.stringify(item))}"><i class="fas fa-eye me-1"></i>View / Reply</button>`;
-              actionButtons += `<button class="btn btn-sm strike-btn delete-inquiry-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
+              actionButtons += `<button class="btn btn-sm text-danger delete-inquiry-btn" data-id="${item.id}"><i class="fas fa-trash-can"></i></button>`;
             }
             if (schema.removable) {
               actionButtons += `<button class="btn btn-sm strike-btn" data-type="${schema.removable}" data-id="${item.id}"><i class="fas fa-trash-can me-1"></i>Strike</button>`;

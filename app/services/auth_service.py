@@ -6,33 +6,20 @@ from app.models import Member, User
 
 class AuthService:
     @staticmethod
-<<<<<<< HEAD
     def register_user(data, allow_admin_role=False):
         email = (data.get("email") or "").strip().lower()
         password = data.get("password")
         full_name = (data.get("full_name") or "").strip()
-=======
-    def register_user(data):
-        email = (data.get("email") or "").strip().lower()
-        password = data.get("password")
-        full_name = (data.get("full_name") or "").strip()
-        role = (data.get("role") or "student").strip().lower()
->>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
 
         if not email or not password or not full_name:
             raise ValueError("Email, password and full name are required.")
 
-<<<<<<< HEAD
         # Security lock: Public self-registration ALWAYS creates a student.
         # Only internal seeding or elevated calls can create an admin.
         if allow_admin_role and (data.get("role") or "").strip().lower() == "admin":
             role = "admin"
         else:
             role = "student"
-=======
-        if role not in {"admin", "student"}:
-            raise ValueError("Role must be either 'admin' or 'student'.")
->>>>>>> 574f13998c394861bfc566a3ff6e3c6c6f0f5e99
 
         if User.query.filter_by(email=email).first():
             raise ValueError("User with this email already exists.")
