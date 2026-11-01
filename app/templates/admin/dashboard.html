@@ -1146,9 +1146,35 @@
       };
 
       const sessionToken = localStorage.getItem("token");
-      if (!sessionToken) {
+      const sessionRole = localStorage.getItem("userRole");
+      if (!sessionToken || sessionRole !== "admin") {
         window.location.href = "/login";
       }
+
+      // Verify admin authorization against backend
+      (async function verifyAdminAuth() {
+        if (!sessionToken) return;
+        try {
+          const res = await fetch("/api/auth/me", {
+            headers: { Authorization: "Bearer " + sessionToken }
+          });
+          if (!res.ok) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userRole");
+            window.location.href = "/login";
+            return;
+          }
+          const user = await res.json();
+          if (user.role !== "admin") {
+            alert("Access Denied: Administrator account required.");
+            localStorage.removeItem("token");
+            localStorage.removeItem("userRole");
+            window.location.href = "/login";
+          }
+        } catch (e) {
+          console.warn("Admin auth check:", e);
+        }
+      })();
 
       const deskFetch = async (path, method = "GET", payload) => {
         const response = await fetch(path, {
@@ -1159,6 +1185,12 @@
           },
           body: payload ? JSON.stringify(payload) : undefined,
         });
+        if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userRole");
+          window.location.href = "/login";
+          throw new Error("Session expired or unauthorized.");
+        }
         const body = await response.json();
         if (!response.ok) throw new Error(body.error || "Request failed.");
         return body;
