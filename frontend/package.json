@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"const fs=require('fs'); fs.cpSync('../backend/app/static/react', 'dist', {recursive: true});\"",
+    "build": "node scripts/build.js",
     "build:android": "npm run build && npx cap sync android",
     "cap:sync": "npm run build && npx cap sync android",
     "cap:open": "npx cap open android",
