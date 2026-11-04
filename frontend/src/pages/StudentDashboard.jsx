@@ -2247,6 +2247,77 @@ export default function StudentDashboard() {
           </div>
         </div>
       )}
+
+      {/* Native-Inspired Floating Mobile Bottom Navigation Bar (LifeDrop Style) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/90 backdrop-blur-2xl border-t border-white/10 px-2 py-2 pb-[calc(env(safe-area-inset-bottom,0px)+0.5rem)] shadow-[0_-10px_30px_rgba(0,0,0,0.6)]">
+        <div className="grid grid-cols-5 gap-1 text-center">
+          <button
+            onClick={() => setActiveTab('catalog')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition duration-200 ${
+              activeTab === 'catalog'
+                ? 'bg-indigo-600/30 text-indigo-400 font-bold shadow-inner'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <BookOpen className="w-5 h-5 mb-1" />
+            <span className="text-[10px] tracking-tight">Catalog</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('notes')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl relative transition duration-200 ${
+              activeTab === 'notes'
+                ? 'bg-indigo-600/30 text-indigo-400 font-bold shadow-inner'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <FileText className="w-5 h-5 mb-1" />
+            <span className="text-[10px] tracking-tight">Vault</span>
+            <span className="absolute top-1 right-2 px-1 py-0.2 bg-gradient-to-r from-amber-500 to-orange-500 text-[8px] font-black rounded-full text-slate-950 uppercase">PDF</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('marketplace')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition duration-200 ${
+              activeTab === 'marketplace'
+                ? 'bg-indigo-600/30 text-indigo-400 font-bold shadow-inner'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Store className="w-5 h-5 mb-1" />
+            <span className="text-[10px] tracking-tight">Market</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('issues')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl relative transition duration-200 ${
+              activeTab === 'issues'
+                ? 'bg-indigo-600/30 text-indigo-400 font-bold shadow-inner'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Clock className="w-5 h-5 mb-1" />
+            <span className="text-[10px] tracking-tight">Loans</span>
+            {myIssues && myIssues.length > 0 && (
+              <span className="absolute top-1 right-2 w-4 h-4 bg-indigo-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {myIssues.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('badges')}
+            className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-2xl transition duration-200 ${
+              activeTab === 'badges'
+                ? 'bg-indigo-600/30 text-indigo-400 font-bold shadow-inner'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Award className="w-5 h-5 mb-1" />
+            <span className="text-[10px] tracking-tight">Ranks</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }
