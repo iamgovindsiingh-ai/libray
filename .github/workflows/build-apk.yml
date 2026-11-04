@@ -38,15 +38,9 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Build Web Production Assets
+      - name: Build Web & Native Android Assets
         working-directory: frontend
         run: npm run build
-
-      - name: Copy Web Assets to Android
-        working-directory: frontend
-        run: |
-          npx cap telemetry off || true
-          npx cap copy android
 
       - name: Build Debug APK with Gradle
         working-directory: frontend/android
