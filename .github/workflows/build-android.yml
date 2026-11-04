@@ -12,10 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 17
+      # Step 2: Setup Java 17
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -24,13 +26,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Set up Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
       - name: Grant Execute Permission to Gradlew
         run: chmod +x frontend/android/gradlew
 
@@ -38,11 +33,31 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+      # Step 3: Setup Node.js 22 (Installed BEFORE any npm or Capacitor command)
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # Step 4: Verify Node.js version
+      - name: Verify Node.js Version
+        working-directory: frontend
+        run: |
+          echo "=== Verifying Runtime Environment ==="
+          node --version
+          npm --version
+          which node
+          npx cap --version
+
+      # Step 5: Install frontend dependencies
       - name: Install Frontend Dependencies
         working-directory: frontend
         run: npm ci
 
-      - name: Build React Production Assets
+      # Step 6: Build React frontend
+      - name: Build React Frontend
         working-directory: frontend
         run: npm run build
 
@@ -57,16 +72,21 @@ jobs:
           echo "WebDir verified successfully:"
           ls -la dist/
 
+      # Step 7: Run npx cap telemetry off
+      - name: Disable Capacitor Telemetry
+        working-directory: frontend
+        run: npx cap telemetry off
+
+      # Step 8: Run npx cap sync android (No || true)
       - name: Run Capacitor Sync Android
         working-directory: frontend
-        run: |
-          npx cap telemetry off || true
-          npx cap sync android --inline
+        run: npx cap sync android --inline
 
-      - name: Verify Capacitor Android Gradle Files
+      # Step 9: Verify Android configuration
+      - name: Verify Android Configuration
         working-directory: frontend
         run: |
-          echo "Verifying essential Capacitor Android Gradle files..."
+          echo "=== Verifying Essential Capacitor Android Files ==="
           test -f "android/capacitor-cordova-android-plugins/cordova.variables.gradle" || {
             echo "::error::Missing android/capacitor-cordova-android-plugins/cordova.variables.gradle!"
             exit 1
@@ -79,30 +99,28 @@ jobs:
             echo "::error::Missing android/app/capacitor.build.gradle!"
             exit 1
           }
-          echo "All essential Capacitor Gradle files verified successfully."
+          echo "All essential Capacitor Android configuration files verified successfully."
 
-      - name: Build Debug APK with Gradle
+      # Step 10: Run Gradle assembleDebug
+      - name: Run Gradle assembleDebug
         working-directory: frontend/android
-        run: |
-          ./gradlew :app:assembleDebug --no-daemon --stacktrace
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
+      # Step 11: Locate and Upload generated APK
       - name: Locate and Prepare APK
         run: |
           mkdir -p release-apk
-          echo "=== Searching for generated APK files ==="
-          find frontend/android -name "*.apk"
-          
-          APK_FILE=$(find frontend/android -name "*.apk" | head -n 1)
+          echo "=== Locating generated APK ==="
+          APK_FILE=$(find frontend/android -type f -name "*.apk" | head -n 1)
           if [ -z "$APK_FILE" ]; then
-            APK_FILE=$(find . -name "*.apk" | head -n 1)
+            APK_FILE=$(find . -type f -name "*.apk" | head -n 1)
           fi
-          
           if [ -n "$APK_FILE" ] && [ -f "$APK_FILE" ]; then
             echo "SUCCESS: Found APK at $APK_FILE"
             cp -v "$APK_FILE" release-apk/NexShelf-v1.0.0.apk
             ls -lh release-apk/NexShelf-v1.0.0.apk
           else
-            echo "::error::No APK file generated! Directory contents:"
+            echo "::error::No APK file generated! Listing frontend/android contents:"
             ls -laR frontend/android/app/build || true
             exit 1
           fi
