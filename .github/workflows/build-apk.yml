@@ -60,8 +60,11 @@ jobs:
       - name: Run Capacitor Sync Android
         working-directory: frontend
         run: |
-          npx cap telemetry off || true
-          npx cap sync android --inline
+          npx cap sync android --inline 2>&1 | tee cap_sync.log || {
+            echo "========== CAPACITOR SYNC FAILED =========="
+            cat cap_sync.log
+            exit 1
+          }
 
       - name: Verify Capacitor Android Gradle Files
         working-directory: frontend
