@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">NexShelf</string>
+    <string name="title_activity_main">NexShelf</string>
+    <string name="package_name">com.nexshelf.app</string>
+    <string name="custom_url_scheme">com.nexshelf.app</string>
+</resources>

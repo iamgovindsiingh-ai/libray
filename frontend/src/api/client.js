@@ -4,7 +4,22 @@
  * Properly supports multipart/form-data file uploads.
  */
 
-const API_BASE = '/api';
+import { Capacitor } from '@capacitor/core';
+
+export const getApiBase = () => {
+  if (import.meta.env.VITE_API_BASE) {
+    return import.meta.env.VITE_API_BASE;
+  }
+  if (
+    (typeof window !== 'undefined' && window.location.origin.includes('capacitor://')) ||
+    Capacitor.isNativePlatform()
+  ) {
+    return 'https://nexshelf-library.onrender.com/api';
+  }
+  return '/api';
+};
+
+export const API_BASE = getApiBase();
 
 export async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem('token');

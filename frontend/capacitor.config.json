@@ -1,0 +1,13 @@
+{
+  "appId": "com.nexshelf.app",
+  "appName": "NexShelf",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true,
+    "webContentsDebuggingEnabled": true
+  }
+}

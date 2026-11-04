@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { api } from '../api/client';
+import { api, API_BASE } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import {
   Sparkles,
@@ -401,7 +401,7 @@ export default function StudentDashboard() {
     if (!note || !note.id) return;
     showToast(`Downloading "${note.title}"...`);
     const link = document.createElement('a');
-    link.href = `/api/notes/${note.id}/download`;
+    link.href = `${API_BASE}/notes/${note.id}/download`;
     link.setAttribute('download', `${note.title || 'study_notes'}.pdf`);
     document.body.appendChild(link);
     link.click();
