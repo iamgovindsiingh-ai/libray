@@ -16,9 +16,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Java 17
+      # Step 2: Setup Java 17 (Temurin distribution with setup-java v5)
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -33,7 +33,7 @@ jobs:
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-      # Step 3: Setup Node.js 22 (Installed BEFORE any npm or Capacitor command)
+      # Step 3: Setup Node.js 22 (Enforced for Capacitor 8 CLI)
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
@@ -41,30 +41,38 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      # Step 4: Verify Node.js version
-      - name: Verify Node.js Version
+      # Step 4: Verify Node.js and npm Runtime Environment
+      - name: Verify Node.js Runtime
         working-directory: frontend
         run: |
-          echo "=== Verifying Runtime Environment ==="
+          echo "=== Verifying Node.js Runtime ==="
           node --version
           npm --version
           which node
-          npx cap --version
 
-      # Step 5: Install frontend dependencies
+      # Step 5: Install Frontend Dependencies
       - name: Install Frontend Dependencies
         working-directory: frontend
         run: npm ci
 
-      # Step 6: Build React frontend
+      # Step 6: Verify Installed Capacitor CLI and Core Plugins
+      - name: Verify Capacitor Dependencies & CLI
+        working-directory: frontend
+        run: |
+          echo "=== Verifying Capacitor Dependencies & CLI ==="
+          npm ls @capacitor/cli @capacitor/core @capacitor/android
+          npx --no-install cap --version
+
+      # Step 7: Build React Frontend
       - name: Build React Frontend
         working-directory: frontend
         run: npm run build
 
+      # Step 8: Verify configured WebDir (dist)
       - name: Verify WebDir (dist)
         working-directory: frontend
         run: |
-          echo "Checking configured webDir..."
+          echo "=== Checking configured webDir ==="
           if [ ! -d "dist" ] || [ ! -f "dist/index.html" ]; then
             echo "::error::WebDir 'dist' or 'dist/index.html' does not exist!"
             exit 1
@@ -72,17 +80,17 @@ jobs:
           echo "WebDir verified successfully:"
           ls -la dist/
 
-      # Step 7: Run npx cap telemetry off
+      # Step 9: Disable Capacitor Telemetry
       - name: Disable Capacitor Telemetry
         working-directory: frontend
         run: npx cap telemetry off
 
-      # Step 8: Run npx cap sync android (No || true)
+      # Step 10: Run Capacitor Sync Android
       - name: Run Capacitor Sync Android
         working-directory: frontend
         run: npx cap sync android --inline
 
-      # Step 9: Verify Android configuration
+      # Step 11: Verify Android Configuration Files
       - name: Verify Android Configuration
         working-directory: frontend
         run: |
@@ -101,19 +109,22 @@ jobs:
           }
           echo "All essential Capacitor Android configuration files verified successfully."
 
-      # Step 10: Run Gradle assembleDebug
+      # Step 12: Run Gradle assembleDebug
       - name: Run Gradle assembleDebug
         working-directory: frontend/android
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
-      # Step 11: Locate and Upload generated APK
+      # Step 13: Locate and Upload generated APK
       - name: Locate and Prepare APK
         run: |
           mkdir -p release-apk
           echo "=== Locating generated APK ==="
-          APK_FILE=$(find frontend/android -type f -name "*.apk" | head -n 1)
+          APK_FILE=$(find frontend/android/app/build/outputs/apk -type f -name "*.apk" 2>/dev/null | head -n 1)
           if [ -z "$APK_FILE" ]; then
-            APK_FILE=$(find . -type f -name "*.apk" | head -n 1)
+            APK_FILE=$(find frontend/android -type f -name "*.apk" 2>/dev/null | head -n 1)
+          fi
+          if [ -z "$APK_FILE" ]; then
+            APK_FILE=$(find . -type f -name "*.apk" 2>/dev/null | head -n 1)
           fi
           if [ -n "$APK_FILE" ] && [ -f "$APK_FILE" ]; then
             echo "SUCCESS: Found APK at $APK_FILE"
