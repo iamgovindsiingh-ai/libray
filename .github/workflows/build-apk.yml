@@ -31,6 +31,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
+      - name: Grant Execute Permission to Gradlew
+        run: chmod +x frontend/android/gradlew
+
       - name: Install Frontend Dependencies
         working-directory: frontend
         run: npm ci
@@ -45,9 +48,7 @@ jobs:
 
       - name: Build Debug APK with Gradle
         working-directory: frontend/android
-        run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
